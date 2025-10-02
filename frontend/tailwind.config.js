@@ -12,6 +12,10 @@ export default {
         'brand-dark': '#111827',
         'brand-accent-orange': '#FF5733',
         'brand-accent-blue': '#3B82F6',
+        // Light theme colors
+        'light-bg': '#F9FAFB',
+        'light-navbar-bg': '#FFFFFF',
+        'light-text': '#1F2937',
       },
       // 2. Add your custom background gradients
       backgroundImage: {
