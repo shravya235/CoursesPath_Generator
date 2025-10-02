@@ -5,6 +5,7 @@ const Navbar = () => {
   const [theme, setTheme] = useState('light');
 
   useEffect(() => {
+    // ... (your existing theme logic remains unchanged) ...
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
       setTheme(savedTheme);
@@ -14,7 +15,6 @@ const Navbar = () => {
         document.documentElement.classList.remove('dark');
       }
     } else {
-      // Default to system preference
       if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
         setTheme('dark');
         document.documentElement.classList.add('dark');
@@ -46,10 +46,11 @@ const Navbar = () => {
           </span>
         </div>
         <div className="hidden md:flex items-center space-x-10">
-          <a href="#" className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">
+          {/* Update the hrefs for Home and About */}
+          <a href="#home" className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">
             Home
           </a>
-          <a href="#" className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">
+          <a href="#about" className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">
             About
           </a>
           <a href="#" className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">

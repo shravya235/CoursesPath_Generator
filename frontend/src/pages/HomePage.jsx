@@ -3,6 +3,7 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 import PathCard from '../components/PathCard';
 import ChatbotButton from '../components/ChatbotButton';
+import AboutSection from '../components/AboutSection';
 
 const HomePage = () => {
   const paths = [
@@ -15,9 +16,9 @@ const HomePage = () => {
     <div className="bg-light-bg dark:bg-[#0a0f23] min-h-screen text-light-text dark:text-gray-100 relative overflow-x-hidden font-sans">
       <Navbar />
 
-      {/* Hero Section */}
-      <main className="relative pt-32 pb-20 overflow-hidden">
-        {/* Abstract 3D Liquid Gradient Blob */} 
+      {/* Hero Section with id="home" */}
+      <main id="home" className="relative pt-32 pb-20 overflow-hidden">
+        {/* ... (rest of your hero section code remains unchanged) ... */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[28rem] bg-gradient-magenta-cyan opacity-20 blur-[80px] rounded-full animate-blob pointer-events-none select-none"></div>
         <div className="absolute top-20 right-10 w-72 h-72 bg-gradient-purple-blue opacity-15 blur-[60px] rounded-full animate-blob-delayed pointer-events-none select-none"></div>
 
@@ -53,6 +54,10 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+
+      <div id="about">
+        <AboutSection />
+      </div>
 
       <ChatbotButton />
     </div>

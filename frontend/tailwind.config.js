@@ -47,6 +47,8 @@ export default {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
       },
+      // 6. Add smooth scroll behavior
+      scrollBehavior: ['smooth'],
     },
   },
   plugins: [],
