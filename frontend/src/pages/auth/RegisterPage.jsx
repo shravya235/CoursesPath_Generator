@@ -1,7 +1,9 @@
+// src/pages/auth/RegisterPage.jsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 import { FaGithub } from 'react-icons/fa';
+import CustomSelect from '../../components/CustomSelect'; // Corrected import path
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +13,14 @@ const RegisterPage = () => {
     agree: false,
   });
 
+  const educationOptions = [
+    { value: 'high-school', label: 'High School' },
+    { value: 'pre-university', label: 'Pre-University' },
+    { value: 'undergraduate', label: 'Undergraduate' },
+    { value: 'graduate', label: 'Graduate' },
+    { value: 'other', label: 'Other' },
+  ];
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -19,9 +29,12 @@ const RegisterPage = () => {
     });
   };
 
+  const handleEducationChange = (value) => {
+    setFormData({ ...formData, education: value });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle registration logic here
     console.log('Register data:', formData);
   };
 
@@ -36,7 +49,6 @@ const RegisterPage = () => {
         {/* Logo and Title */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-cyan-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-            {/* Placeholder for logo, e.g., an icon */}
             <span className="text-white text-2xl font-bold">GV</span>
           </div>
           <h2 className="text-3xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">
@@ -73,21 +85,12 @@ const RegisterPage = () => {
           </div>
 
           {/* Education Dropdown */}
-          <div>
-            <select
-              name="education"
-              value={formData.education}
-              onChange={handleChange}
-              className="w-full bg-gray-700/50 border-0 rounded-lg px-4 py-3 text-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
-              required
-            >
-              <option value="" disabled>Select Education Level</option>
-              <option value="high-school">High School</option>
-              <option value="undergraduate">Undergraduate</option>
-              <option value="graduate">Graduate</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
+          <CustomSelect
+            options={educationOptions}
+            value={formData.education}
+            onChange={handleEducationChange}
+            placeholder="Select Education Level"
+          />
 
           {/* Terms Checkbox */}
           <div className="flex items-center">

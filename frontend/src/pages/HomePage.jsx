@@ -1,9 +1,8 @@
-// src/pages/HomePage.jsx
 import React from 'react';
 import Navbar from '../components/Navbar';
 import PathCard from '../components/PathCard';
-import ChatbotButton from '../components/ChatbotButton';
 import AboutSection from '../components/AboutSection';
+import Chatbot from '../components/Chatbot';
 
 const HomePage = () => {
   const paths = [
@@ -59,7 +58,7 @@ const HomePage = () => {
         <AboutSection />
       </div>
 
-      <ChatbotButton />
+      <Chatbot />
     </div>
   );
 };
