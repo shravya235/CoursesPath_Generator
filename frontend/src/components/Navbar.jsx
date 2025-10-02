@@ -65,7 +65,10 @@ const Navbar = () => {
           >
             {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
           </button>
-          <button className="bg-gradient-electric-orange hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 text-white font-extrabold py-2 px-8 rounded-full shadow-[0_0_15px_rgba(255,69,0,0.8)] hover:shadow-[0_0_30px_rgba(255,69,0,1)] transition-colors duration-300">
+          <button
+            onClick={() => window.location.href = '/login'}
+            className="bg-gradient-electric-orange hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 text-white font-extrabold py-2 px-8 rounded-full shadow-[0_0_15px_rgba(255,69,0,0.8)] hover:shadow-[0_0_30px_rgba(255,69,0,1)] transition-colors duration-300"
+          >
             Login
           </button>
         </div>
