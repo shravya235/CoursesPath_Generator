@@ -56,7 +56,7 @@ const Chatbot = () => {
       )}
 
       {chatOpen && (
-        <div className="fixed bottom-28 right-8 w-80 max-w-xs bg-gray-900/70 backdrop-blur-lg rounded-xl border border-cyan-500 shadow-lg shadow-cyan-700/50 flex flex-col z-50">
+        <div className="fixed bottom-20 right-4 w-full max-w-xs md:w-80 bg-gray-900/70 backdrop-blur-lg rounded-xl border border-cyan-500 shadow-lg shadow-cyan-700/50 flex flex-col z-50">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-2 border-b border-cyan-600">
             <h3 className="text-cyan-400 font-extrabold bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">

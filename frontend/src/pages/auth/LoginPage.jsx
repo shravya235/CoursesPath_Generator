@@ -30,13 +30,13 @@ const LoginPage = () => {
       <div className="absolute top-20 right-10 w-72 h-72 bg-gradient-purple-blue opacity-15 blur-[60px] rounded-full animate-blob-delayed pointer-events-none select-none"></div>
 
       {/* Glassmorphism Login Card */}
-      <div className="relative z-10 bg-gray-800/50 backdrop-blur-lg border border-cyan-700/50 rounded-2xl p-8 w-full max-w-md shadow-2xl">
+      <div className="relative z-10 bg-gray-800/50 backdrop-blur-lg border border-cyan-700/50 rounded-2xl p-4 md:p-8 w-full max-w-sm md:max-w-md shadow-2xl">
         {/* Logo and Title */}
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-cyan-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-            <span className="text-white text-2xl font-bold">GV</span>
+        <div className="text-center mb-6 md:mb-8">
+          <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-r from-purple-400 to-cyan-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+            <span className="text-white text-xl md:text-2xl font-bold">GV</span>
           </div>
-          <h2 className="text-3xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">
+          <h2 className="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">
             GyanVistara
           </h2>
         </div>

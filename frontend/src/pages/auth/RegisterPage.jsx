@@ -45,13 +45,13 @@ const RegisterPage = () => {
       <div className="absolute top-20 right-10 w-72 h-72 bg-gradient-purple-blue opacity-15 blur-[60px] rounded-full animate-blob-delayed pointer-events-none select-none"></div>
 
       {/* Glassmorphism Register Card */}
-      <div className="relative z-10 bg-gray-800/50 backdrop-blur-lg border border-cyan-700/50 rounded-2xl p-8 w-full max-w-md shadow-2xl">
+      <div className="relative z-10 bg-gray-800/50 backdrop-blur-lg border border-cyan-700/50 rounded-2xl p-4 md:p-8 w-full max-w-sm md:max-w-md shadow-2xl">
         {/* Logo and Title */}
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-cyan-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-            <span className="text-white text-2xl font-bold">GV</span>
+        <div className="text-center mb-6 md:mb-8">
+          <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-r from-purple-400 to-cyan-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+            <span className="text-white text-xl md:text-2xl font-bold">GV</span>
           </div>
-          <h2 className="text-3xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">
+          <h2 className="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">
             GyanVistara
           </h2>
         </div>
@@ -93,7 +93,7 @@ const RegisterPage = () => {
           />
 
           {/* Terms Checkbox */}
-          <div className="flex items-center">
+          <div className="flex items-start">
             <input
               type="checkbox"
               name="agree"
@@ -104,13 +104,13 @@ const RegisterPage = () => {
             />
             <label
               htmlFor="agree"
-              className={`w-5 h-5 rounded border-2 border-cyan-500 flex items-center justify-center cursor-pointer transition-all ${
+              className={`w-5 h-5 rounded border-2 border-cyan-500 flex items-center justify-center cursor-pointer transition-all mt-0.5 ${
                 formData.agree ? 'bg-gradient-to-r from-cyan-500 to-blue-500' : 'bg-transparent'
               }`}
             >
               {formData.agree && <span className="text-white text-xs">✓</span>}
             </label>
-            <span className="ml-3 text-sm text-gray-300">
+            <span className="ml-2 md:ml-3 text-xs md:text-sm text-gray-300 leading-tight">
               I agree to the <a href="#" className="text-cyan-400 hover:underline">terms and conditions</a>
             </span>
           </div>

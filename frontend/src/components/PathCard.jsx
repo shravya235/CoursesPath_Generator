@@ -15,20 +15,20 @@ const PathCard = ({ title, tags, gradient, rotation }) => {
       style={{ zIndex: 10 }}
     >
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-3xl font-extrabold uppercase text-white drop-shadow-lg tracking-wider">{title}</h3>
+        <h3 className="md:text-2xl lg:text-3xl text-3xl font-extrabold uppercase text-white drop-shadow-lg tracking-wider">{title}</h3>
         <div className={`w-12 h-12 rounded-full ${gradient} flex-shrink-0 shadow-[0_0_20px_rgba(255,255,255,0.6)] border-4 border-white/30`}></div>
       </div>
       <div className="flex flex-wrap gap-3 mb-8">
         {tags.map((tag, index) => (
           <span
             key={index}
-            className="text-sm font-bold uppercase bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 text-transparent bg-clip-text border border-purple-400 rounded-full px-5 py-2"
+            className="text-sm font-bold uppercase bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 text-transparent bg-clip-text border border-purple-400 rounded-full md:px-4 md:py-1.5 lg:px-5 lg:py-2 px-5 py-2"
           >
             {tag}
           </span>
         ))}
       </div>
-      <button className="w-full bg-gradient-electric-orange hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 text-white font-extrabold py-4 px-6 rounded-3xl flex items-center justify-center space-x-3 transition-all duration-300 shadow-[0_0_25px_rgba(255,69,0,0.8)] hover:shadow-[0_0_50px_rgba(255,69,0,1)]">
+      <button className="w-full bg-gradient-electric-orange hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 text-white font-extrabold md:py-3 md:px-5 lg:py-4 lg:px-6 py-4 px-6 rounded-3xl flex items-center justify-center space-x-3 transition-all duration-300 shadow-[0_0_25px_rgba(255,69,0,0.8)] hover:shadow-[0_0_50px_rgba(255,69,0,1)]">
         <span>Explore Path</span>
         <ArrowIcon />
       </button>

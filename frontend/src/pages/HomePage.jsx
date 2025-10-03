@@ -11,26 +11,26 @@ const HomePage = () => {
   ];
 
   return (
-    <div className="bg-light-bg dark:bg-[#0a0f23] min-h-screen text-light-text dark:text-gray-100 relative overflow-x-hidden font-sans">
+    <div className="bg-light-bg dark:bg-[#0a0f23] min-h-screen text-light-text dark:text-gray-100 relative overflow-x-hidden font-sans pt-20 md:pt-24">
       <Navbar />
 
       {/* Hero Section with id="home" */}
-      <main id="home" className="relative pt-32 pb-20 overflow-hidden">
+      <main id="home" className="relative pb-16 overflow-hidden">
         {/* ... (rest of your hero section code remains unchanged) ... */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[28rem] bg-gradient-magenta-cyan opacity-20 blur-[80px] rounded-full animate-blob pointer-events-none select-none"></div>
         <div className="absolute top-20 right-10 w-72 h-72 bg-gradient-purple-blue opacity-15 blur-[60px] rounded-full animate-blob-delayed pointer-events-none select-none"></div>
 
-        <div className="container mx-auto px-6 text-center relative z-10 max-w-7xl">
-          <h1 className="text-6xl md:text-8xl font-extrabold uppercase text-light-text dark:text-white tracking-wide leading-tight drop-shadow-lg">
+        <div className="container mx-auto px-4 md:px-6 lg:px-8 text-center relative z-10 max-w-7xl">
+          <h1 className="text-5xl sm:text-6xl md:text-6xl lg:text-7xl font-extrabold uppercase text-light-text dark:text-white tracking-wide leading-tight drop-shadow-lg break-words">
             FIND YOUR <br />
             <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">
               CAREER ROADMAP
             </span>
           </h1>
-          <p className="mt-6 text-lg md:text-2xl text-light-text dark:text-gray-300 max-w-3xl mx-auto font-sans">
+          <p className="mt-4 sm:mt-6 text-base sm:text-lg md:text-xl lg:text-2xl text-light-text dark:text-gray-300 max-w-3xl mx-auto font-sans">
             Get accurate, actionable educational paths tailored just for you. Your future starts here.
           </p>
-          <button className="mt-12 bg-gradient-electric-orange text-white font-extrabold uppercase text-xl py-5 px-14 rounded-full shadow-[0_0_20px_#FF5733,0_0_40px_#FF5733] animate-glow transition-all duration-300 hover:scale-110 hover:shadow-[0_0_40px_#FF5733,0_0_80px_#FF5733] hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500">
+          <button className="mt-8 sm:mt-12 bg-gradient-electric-orange text-white font-extrabold uppercase text-lg md:text-lg lg:text-xl py-3 md:py-4 sm:py-5 px-8 md:px-10 sm:px-14 rounded-full shadow-[0_0_20px_#FF5733,0_0_40px_#FF5733] animate-glow transition-all duration-300 hover:scale-110 hover:shadow-[0_0_40px_#FF5733,0_0_80px_#FF5733] hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500">
             Find My Path
           </button>
         </div>
@@ -39,7 +39,7 @@ const HomePage = () => {
       {/* Tilted Card Grid Section */}
       <section className="py-24 -mt-20">
         <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12 lg:gap-16">
             {paths.map((path, index) => (
               <PathCard
                 key={index}
@@ -55,7 +55,7 @@ const HomePage = () => {
 
       <div id="about">
         <AboutSection />
-    </div>
+      </div>
     </div>
   );
 };
