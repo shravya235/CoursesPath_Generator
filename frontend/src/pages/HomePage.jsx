@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import PathCard from '../components/PathCard';
 import AboutSection from '../components/AboutSection';
@@ -30,9 +31,9 @@ const HomePage = () => {
           <p className="mt-4 sm:mt-6 text-base sm:text-lg md:text-xl lg:text-2xl text-light-text dark:text-gray-300 max-w-3xl mx-auto font-sans">
             Get accurate, actionable educational paths tailored just for you. Your future starts here.
           </p>
-          <button className="mt-8 sm:mt-12 bg-gradient-electric-orange text-white font-extrabold uppercase text-lg md:text-lg lg:text-xl py-3 md:py-4 sm:py-5 px-8 md:px-10 sm:px-14 rounded-full shadow-[0_0_20px_#FF5733,0_0_40px_#FF5733] animate-glow transition-all duration-300 hover:scale-110 hover:shadow-[0_0_40px_#FF5733,0_0_80px_#FF5733] hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500">
+          <Link to="/dashboard" className="mt-12 inline-block bg-gradient-electric-orange text-white font-extrabold uppercase text-xl py-5 px-14 rounded-full shadow-[0_0_20px_#FF5733,0_0_40px_#FF5733] animate-glow transition-all duration-300 hover:scale-110 hover:shadow-[0_0_40px_#FF5733,0_0_80px_#FF5733] hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500">
             Find My Path
-          </button>
+          </Link>
         </div>
       </main>
 
