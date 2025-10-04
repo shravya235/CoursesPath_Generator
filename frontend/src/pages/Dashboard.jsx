@@ -1,6 +1,6 @@
 // FILE: src/pages/Dashboard.jsx
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   FaBusinessTime,
   FaTruck,
@@ -13,21 +13,20 @@ import {
   FaShieldAlt,
   FaSearch,
 } from 'react-icons/fa';
-import { BsBuilding } from 'react-icons/bs'; // Corrected Icon Import
-import { HiUserCircle } from 'react-icons/hi';
+import { BsBuilding } from 'react-icons/bs';
 import Navbar from '../components/Navbar';
 
 const educationalPaths = [
-  { id: 'business', name: 'Business', icon: <FaBusinessTime size={50} />, description: 'Learn the fundamentals of management, finance, marketing, and operations to lead in the corporate world.' },
-  { id: 'logistics', name: 'Logistics', icon: <FaTruck size={50} />, description: 'Master the art of supply chain management, from procurement and warehousing to transportation and delivery.' },
-  { id: 'medical', name: 'Medical', icon: <FaStethoscope size={50} />, description: 'Embark on a journey to heal and care for others, from general practice to specialized surgery.' },
-  { id: 'doctor', name: 'Doctor', icon: <FaUserMd size={50} />, description: 'Pursue the noble profession of medicine to diagnose, treat, and prevent human diseases and injuries.' },
-  { id: 'pharmacy', name: 'Pharmacy', icon: <FaUniversity size={50} />, description: 'Become an expert in medicines and their effects, ensuring safe and effective treatment for patients.' },
-  { id: 'engineering', name: 'Engineering', icon: <FaHardHat size={50} />, description: 'Design, build, and maintain engines, machines, structures, and more. A vast field with numerous specializations.' },
-  { id: 'law', name: 'Law', icon: <FaGavel size={50} />, description: 'Understand the legal system, advocate for justice, and navigate the complexities of legislation.' },
-  { id: 'design', name: 'Design', icon: <FaPenNib size={50} />, description: 'Unleash your creativity in fields like graphic design, UX/UI, fashion, or industrial design.' },
-  { id: 'police', name: 'Police', icon: <FaShieldAlt size={50} />, description: 'Serve and protect the community by enforcing laws, responding to emergencies, and ensuring public safety.' },
-  { id: 'architecture', name: 'Architecture', icon: <BsBuilding size={50} />, description: 'Plan and design buildings and physical structures, blending art and science to create functional spaces.' }, // Corrected Icon Usage
+    { id: 'business', name: 'Business', icon: <FaBusinessTime size={50} />, description: 'Learn the fundamentals of management, finance, marketing, and operations to lead in the corporate world.' },
+    { id: 'logistics', name: 'Logistics', icon: <FaTruck size={50} />, description: 'Master the art of supply chain management, from procurement and warehousing to transportation and delivery.' },
+    { id: 'medical', name: 'Medical', icon: <FaStethoscope size={50} />, description: 'Embark on a journey to heal and care for others, from general practice to specialized surgery.' },
+    { id: 'doctor', name: 'Doctor', icon: <FaUserMd size={50} />, description: 'Pursue the noble profession of medicine to diagnose, treat, and prevent human diseases and injuries.' },
+    { id: 'pharmacy', name: 'Pharmacy', icon: <FaUniversity size={50} />, description: 'Become an expert in medicines and their effects, ensuring safe and effective treatment for patients.' },
+    { id: 'engineering', name: 'Engineering', icon: <FaHardHat size={50} />, description: 'Design, build, and maintain engines, machines, structures, and more. A vast field with numerous specializations.' },
+    { id: 'law', name: 'Law', icon: <FaGavel size={50} />, description: 'Understand the legal system, advocate for justice, and navigate the complexities of legislation.' },
+    { id: 'design', name: 'Design', icon: <FaPenNib size={50} />, description: 'Unleash your creativity in fields like graphic design, UX/UI, fashion, or industrial design.' },
+    { id: 'police', name: 'Police', icon: <FaShieldAlt size={50} />, description: 'Serve and protect the community by enforcing laws, responding to emergencies, and ensuring public safety.' },
+    { id: 'architecture', name: 'Architecture', icon: <BsBuilding size={50} />, description: 'Plan and design buildings and physical structures, blending art and science to create functional spaces.' },
 ];
 
 const PathList = ({ paths, selectedPath, onPathHover }) => {
@@ -81,13 +80,66 @@ const PathPreviewCard = ({ path }) => {
   );
 };
 
+
 const Dashboard = () => {
   const [selectedPath, setSelectedPath] = useState(() => educationalPaths.find(p => p.id === 'engineering') || educationalPaths[0]);
+  const [user, setUser] = useState(null); // State to hold user data
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/auth/user', { // Using the proxy
+          method: 'GET',
+          headers: {
+            'x-auth-token': token, // Send the token in the header
+          },
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+
+        const userData = await res.json();
+        setUser(userData); // Set user data in state
+      } catch (error) {
+        console.error(error);
+        localStorage.removeItem('token');
+        navigate('/login');
+      }
+    };
+
+    fetchUserData();
+  }, [navigate]);
+
+  // Show a loading state while user data is being fetched
+  if (!user) {
+    return (
+        <div className="bg-white dark:bg-[#0a0f23] min-h-screen flex items-center justify-center text-light-text dark:text-white">
+            <p>Loading your dashboard...</p>
+        </div>
+    );
+  }
 
   return (
     <div className="bg-white dark:bg-[#0a0f23] min-h-screen text-gray-900 dark:text-gray-100 pt-20 transition-colors duration-500">
       <Navbar />
       <main className="container mx-auto px-4 sm:px-6 py-8">
+        
+        {/* --- PERSONALIZED WELCOME MESSAGE --- */}
+        <div className="text-center mb-12">
+            <h1 className="text-3xl md:text-4xl font-bold text-light-text dark:text-white">
+                Welcome, <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">{user.name}!</span>
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-2">Let's find the perfect career path for you.</p>
+        </div>
+
         <div className="text-center mb-8">
           <div className="relative w-full max-w-md mx-auto px-4 sm:px-0">
             <input
@@ -98,6 +150,7 @@ const Dashboard = () => {
             <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400" size={20} />
           </div>
         </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           <div className="lg:col-span-1">
             <PathList paths={educationalPaths} selectedPath={selectedPath} onPathHover={setSelectedPath} />

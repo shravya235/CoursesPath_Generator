@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { FcGoogle } from 'react-icons/fc';
 import { FaGithub } from 'react-icons/fa';
 
@@ -8,6 +8,8 @@ const LoginPage = () => {
     email: '',
     password: '',
   });
+  const [error, setError] = useState(''); // State for handling errors
+  const navigate = useNavigate(); // Hook for navigation
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,10 +19,33 @@ const LoginPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  // --- MODIFIED HANDLE SUBMIT ---
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log('Login data:', formData);
+    setError(''); // Clear previous errors
+
+    try {
+      const res = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.msg || 'Something went wrong');
+      }
+
+      // If login is successful, save the token and redirect
+      localStorage.setItem('token', data.token);
+      navigate('/dashboard'); // Redirect to the dashboard
+    } catch (err) {
+      setError(err.message);
+      console.error('Login failed:', err);
+    }
   };
 
   return (
@@ -68,6 +93,9 @@ const LoginPage = () => {
               required
             />
           </div>
+
+          {/* --- ERROR MESSAGE DISPLAY --- */}
+          {error && <p className="text-red-400 text-sm text-center">{error}</p>}
 
           {/* Login Button */}
           <button

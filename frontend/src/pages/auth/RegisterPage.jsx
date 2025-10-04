@@ -1,6 +1,6 @@
 // src/pages/auth/RegisterPage.jsx
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { FcGoogle } from 'react-icons/fc';
 import { FaGithub } from 'react-icons/fa';
 import CustomSelect from '../../components/CustomSelect'; // Corrected import path
@@ -9,9 +9,12 @@ const RegisterPage = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    password: '', // Add password to state
     education: '',
     agree: false,
   });
+  const [error, setError] = useState(''); // State for handling errors
+  const navigate = useNavigate(); // Hook for navigation
 
   const educationOptions = [
     { value: 'high-school', label: 'High School' },
@@ -33,9 +36,43 @@ const RegisterPage = () => {
     setFormData({ ...formData, education: value });
   };
 
-  const handleSubmit = (e) => {
+  // --- MODIFIED HANDLE SUBMIT ---
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Register data:', formData);
+    setError(''); // Clear previous errors
+
+    if (!formData.agree) {
+        setError('You must agree to the terms and conditions.');
+        return;
+    }
+
+    try {
+      const res = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          education: formData.education,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.msg || 'Something went wrong');
+      }
+
+      // If registration is successful, save the token and redirect
+      localStorage.setItem('token', data.token);
+      navigate('/dashboard'); // Redirect to the dashboard
+    } catch (err) {
+      setError(err.message);
+      console.error('Registration failed:', err);
+    }
   };
 
   return (
@@ -83,6 +120,20 @@ const RegisterPage = () => {
               required
             />
           </div>
+          
+          {/* --- ADDED PASSWORD FIELD --- */}
+          <div>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Password"
+              className="w-full bg-gray-700/50 border-0 rounded-lg px-4 py-3 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
+              required
+            />
+          </div>
+
 
           {/* Education Dropdown */}
           <CustomSelect
@@ -115,10 +166,13 @@ const RegisterPage = () => {
             </span>
           </div>
 
+          {/* --- ERROR MESSAGE DISPLAY --- */}
+          {error && <p className="text-red-400 text-sm text-center">{error}</p>}
+
           {/* Register Button */}
           <button
             type="submit"
-            className="w-full bg-gradient-electric-orange text-white font-extrabold uppercase text-lg py-3 px-6 rounded-full shadow-[0_0_20px_#FF5733,0_0_40px_#FF5733] animate-glow transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_#FF5733,0_0_80px_#FF5733] hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500"
+            className="w-full bg-gradient-electric-orange text-white font-extrabold uppercase text-lg py-3 px-6 rounded-full shadow-[0_0_20px_#FF5733,0_0_40px_#FF5733] animate-glow transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_#FF533,0_0_80px_#FF5733] hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500"
           >
             Register
           </button>
