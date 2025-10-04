@@ -9,6 +9,16 @@ require('dotenv').config();
 exports.register = async (req, res) => {
   const { name, email, password, education } = req.body;
 
+  // --- ADDED: PASSWORD VALIDATION ---
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+  if (!passwordRegex.test(password)) {
+    return res.status(400).json({ 
+      msg: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.' 
+    });
+  }
+  // --- END OF VALIDATION ---
+
   try {
     let user = await User.findOne({ email });
     if (user) {
