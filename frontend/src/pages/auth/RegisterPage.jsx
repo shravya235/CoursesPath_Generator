@@ -1,8 +1,7 @@
 // src/pages/auth/RegisterPage.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
-import { FcGoogle } from 'react-icons/fc';
-import { FaGithub } from 'react-icons/fa';
+
 import CustomSelect from '../../components/CustomSelect'; // Corrected import path
 
 const RegisterPage = () => {
@@ -13,6 +12,7 @@ const RegisterPage = () => {
     education: '',
     agree: false,
   });
+  const [customEducation, setCustomEducation] = useState(''); // State for custom education input
   const [error, setError] = useState(''); // State for handling errors
   const navigate = useNavigate(); // Hook for navigation
 
@@ -34,6 +34,13 @@ const RegisterPage = () => {
 
   const handleEducationChange = (value) => {
     setFormData({ ...formData, education: value });
+    if (value !== 'other') {
+      setCustomEducation(''); // Clear custom education if not 'other'
+    }
+  };
+
+  const handleCustomEducationChange = (e) => {
+    setCustomEducation(e.target.value);
   };
 
   // --- MODIFIED HANDLE SUBMIT ---
@@ -43,6 +50,11 @@ const RegisterPage = () => {
 
     if (!formData.agree) {
         setError('You must agree to the terms and conditions.');
+        return;
+    }
+
+    if (formData.education === 'other' && !customEducation.trim()) {
+        setError('Please specify your education level.');
         return;
     }
 
@@ -56,7 +68,7 @@ const RegisterPage = () => {
           name: formData.name,
           email: formData.email,
           password: formData.password,
-          education: formData.education,
+          education: formData.education === 'other' ? customEducation : formData.education,
         }),
       });
 
@@ -143,6 +155,20 @@ const RegisterPage = () => {
             placeholder="Select Education Level"
           />
 
+          {/* Custom Education Input */}
+          {formData.education === 'other' && (
+            <div>
+              <input
+                type="text"
+                value={customEducation}
+                onChange={handleCustomEducationChange}
+                placeholder="Please specify your education level"
+                className="w-full bg-gray-700/50 border-0 rounded-lg px-4 py-3 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
+                required
+              />
+            </div>
+          )}
+
           {/* Terms Checkbox */}
           <div className="flex items-start">
             <input
@@ -178,15 +204,7 @@ const RegisterPage = () => {
           </button>
         </form>
 
-        {/* Social Login Buttons */}
-        <div className="mt-6 space-y-3">
-          <button className="w-full bg-gray-700/50 text-white py-3 px-4 rounded-lg border border-transparent hover:border-cyan-500 transition-all flex items-center justify-center">
-            <FcGoogle className="mr-2 text-2xl" /> Login with Google
-          </button>
-          <button className="w-full bg-gray-700/50 text-white py-3 px-4 rounded-lg border border-transparent hover:border-cyan-500 transition-all flex items-center justify-center">
-            <FaGithub className="mr-2 text-2xl" /> Login with Github
-          </button>
-        </div>
+
 
         {/* Toggle Link */}
         <div className="mt-6 text-center text-sm text-gray-300">

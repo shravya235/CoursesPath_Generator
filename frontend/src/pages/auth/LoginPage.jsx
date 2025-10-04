@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
-import { FcGoogle } from 'react-icons/fc';
-import { FaGithub } from 'react-icons/fa';
+
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -106,15 +105,7 @@ const LoginPage = () => {
           </button>
         </form>
 
-        {/* Social Login Buttons */}
-        <div className="mt-6 space-y-3">
-          <button className="w-full bg-gray-700/50 text-white py-3 px-4 rounded-lg border border-transparent hover:border-cyan-500 transition-all flex items-center justify-center">
-            <FcGoogle className="mr-2 text-2xl" /> Login with Google
-          </button>
-          <button className="w-full bg-gray-700/50 text-white py-3 px-4 rounded-lg border border-transparent hover:border-cyan-500 transition-all flex items-center justify-center">
-            <FaGithub className="mr-2 text-2xl" /> Login with Github
-          </button>
-        </div>
+
 
         {/* Toggle Link */}
         <div className="mt-6 text-center text-sm text-gray-300">
