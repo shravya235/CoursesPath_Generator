@@ -8,7 +8,7 @@ const RegisterPage = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: '', // Add password to state
+    password: '', 
     education: '',
     agree: false,
   });
@@ -49,13 +49,13 @@ const RegisterPage = () => {
     setError(''); // Clear previous errors
 
     if (!formData.agree) {
-        setError('You must agree to the terms and conditions.');
-        return;
+      setError('You must agree to the terms and conditions.');
+      return;
     }
 
     if (formData.education === 'other' && !customEducation.trim()) {
-        setError('Please specify your education level.');
-        return;
+      setError('Please specify your education level.');
+      return;
     }
 
     try {
@@ -72,11 +72,19 @@ const RegisterPage = () => {
         }),
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
-        throw new Error(data.msg || 'Something went wrong');
+        // Try to parse error message if JSON, else fallback
+        let errorMsg = 'Something went wrong';
+        try {
+          const errorData = await res.json();
+          errorMsg = errorData.msg || errorMsg;
+        } catch {
+          errorMsg = await res.text();
+        }
+        throw new Error(errorMsg);
       }
+
+      const data = await res.json();
 
       // If registration is successful, save the token and redirect
       localStorage.setItem('token', data.token);
