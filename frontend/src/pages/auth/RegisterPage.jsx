@@ -72,23 +72,24 @@ const RegisterPage = () => {
         }),
       });
 
-      if (!res.ok) {
-        // Try to parse error message if JSON, else fallback
-        let errorMsg = 'Something went wrong';
+      if (res.headers.get('content-type')?.includes('application/json')) {
         try {
-          const errorData = await res.json();
-          errorMsg = errorData.msg || errorMsg;
+          const data = await res.json();
+          if (res.ok) {
+            // If registration is successful, save the token and redirect
+            localStorage.setItem('token', data.token);
+            navigate('/dashboard'); // Redirect to the dashboard
+          } else {
+            throw new Error(data.msg || 'Something went wrong');
+          }
         } catch {
-          errorMsg = await res.text();
+          const text = await res.text();
+          throw new Error(text || 'Something went wrong');
         }
-        throw new Error(errorMsg);
+      } else {
+        const text = await res.text();
+        throw new Error(text || 'Something went wrong');
       }
-
-      const data = await res.json();
-
-      // If registration is successful, save the token and redirect
-      localStorage.setItem('token', data.token);
-      navigate('/dashboard'); // Redirect to the dashboard
     } catch (err) {
       setError(err.message);
       console.error('Registration failed:', err);
