@@ -8,6 +8,7 @@ const LoginPage = () => {
     password: '',
   });
   const [error, setError] = useState(''); // State for handling errors
+  const [loading, setLoading] = useState(false); // State for loading indicator
   const navigate = useNavigate(); // Hook for navigation
 
   const handleChange = (e) => {
@@ -22,9 +23,10 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(''); // Clear previous errors
+    setLoading(true);
 
     try {
-const res = await fetch('/api/auth/login', {
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -43,7 +45,8 @@ const res = await fetch('/api/auth/login', {
       navigate('/dashboard'); // Redirect to the dashboard
     } catch (err) {
       setError(err.message);
-      console.error('Login failed:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -99,9 +102,10 @@ const res = await fetch('/api/auth/login', {
           {/* Login Button */}
           <button
             type="submit"
-            className="w-full bg-gradient-electric-orange text-white font-extrabold uppercase text-lg py-3 px-6 rounded-full shadow-[0_0_20px_#FF5733,0_0_40px_#FF5733] animate-glow transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_#FF5733,0_0_80px_#FF5733] hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500"
+            disabled={loading}
+            className="w-full bg-gradient-electric-orange text-white font-extrabold uppercase text-lg py-3 px-6 rounded-full shadow-[0_0_20px_#FF5733,0_0_40px_#FF5733] animate-glow transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_#FF5733,0_0_80px_#FF5733] hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Log In
+            {loading ? 'Logging In...' : 'Log In'}
           </button>
         </form>
 

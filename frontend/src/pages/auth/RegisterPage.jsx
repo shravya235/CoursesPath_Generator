@@ -14,6 +14,7 @@ const RegisterPage = () => {
   });
   const [customEducation, setCustomEducation] = useState(''); // State for custom education input
   const [error, setError] = useState(''); // State for handling errors
+  const [loading, setLoading] = useState(false); // State for loading indicator
   const navigate = useNavigate(); // Hook for navigation
 
   const educationOptions = [
@@ -47,19 +48,22 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(''); // Clear previous errors
+    setLoading(true);
 
     if (!formData.agree) {
       setError('You must agree to the terms and conditions.');
+      setLoading(false);
       return;
     }
 
     if (formData.education === 'other' && !customEducation.trim()) {
       setError('Please specify your education level.');
+      setLoading(false);
       return;
     }
 
     try {
-const res = await fetch('/api/auth/register', {
+      const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -92,7 +96,8 @@ const res = await fetch('/api/auth/register', {
       }
     } catch (err) {
       setError(err.message);
-      console.error('Registration failed:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -207,9 +212,10 @@ const res = await fetch('/api/auth/register', {
           {/* Register Button */}
           <button
             type="submit"
-            className="w-full bg-gradient-electric-orange text-white font-extrabold uppercase text-lg py-3 px-6 rounded-full shadow-[0_0_20px_#FF5733,0_0_40px_#FF5733] animate-glow transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_#FF533,0_0_80px_#FF5733] hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500"
+            disabled={loading}
+            className="w-full bg-gradient-electric-orange text-white font-extrabold uppercase text-lg py-3 px-6 rounded-full shadow-[0_0_20px_#FF5733,0_0_40px_#FF5733] animate-glow transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_#FF533,0_0_80px_#FF5733] hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Register
+            {loading ? 'Registering...' : 'Register'}
           </button>
         </form>
 
