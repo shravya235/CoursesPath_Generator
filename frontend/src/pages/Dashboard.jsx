@@ -95,7 +95,7 @@ const Dashboard = () => {
       }
 
       try {
-        const res = await fetch('/api/auth/user', { // Using the proxy
+const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/user`, {
           method: 'GET',
           headers: {
             'x-auth-token': token, // Send the token in the header
