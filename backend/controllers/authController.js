@@ -81,6 +81,10 @@ exports.login = async (req, res) => {
       return res.status(400).json({ msg: 'Invalid Credentials' });
     }
 
+    // Log password lengths for debugging
+    console.log('Received password length:', password.length);
+    console.log('Stored hashed password length:', user.password.length);
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       console.log('Password mismatch for:', email);
