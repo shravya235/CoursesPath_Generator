@@ -104,7 +104,7 @@ const Dashboard = () => {
 
       try {
         // --- THIS IS THE KEY CHANGE ---
-        const res = await fetch('https://gyanvistara-backend.onrender.com/api/auth/user', {
+        const res = await fetch('/api/auth/user', {
           method: 'GET',
           headers: {
             'x-auth-token': token,
