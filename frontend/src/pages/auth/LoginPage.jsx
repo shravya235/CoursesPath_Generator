@@ -25,7 +25,7 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -33,7 +33,13 @@ const LoginPage = () => {
         body: JSON.stringify(formData),
       });
 
-      const data = await res.json();
+      let data;
+      try {
+        data = await res.json();
+      } catch (jsonErr) {
+        // If response is not JSON (e.g., HTML error page), show generic error
+        throw new Error('Server error: Unable to process response. Please try again.');
+      }
 
       if (!res.ok) {
         throw new Error(data.msg || 'Something went wrong');
