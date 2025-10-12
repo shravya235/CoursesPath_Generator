@@ -5,11 +5,17 @@ require('dotenv').config();
 
 const app = express();
 
+// --- Add CORS Options ---
+const corsOptions = {
+  origin: 'https://gyanvistara.vercel.app',
+  optionsSuccessStatus: 200
+};
+
 // Connect to the Database
 connectDB();
 
 // Initialize Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Define Routes
