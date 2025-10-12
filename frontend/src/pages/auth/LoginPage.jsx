@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
-
+import { Link, useNavigate } from 'react-router-dom'; 
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -108,8 +107,6 @@ const LoginPage = () => {
             {loading ? 'Logging In...' : 'Log In'}
           </button>
         </form>
-
-
 
         {/* Toggle Link */}
         <div className="mt-6 text-center text-sm text-gray-300">

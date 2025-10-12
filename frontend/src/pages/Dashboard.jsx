@@ -1,6 +1,5 @@
-// FILE: src/pages/Dashboard.jsx
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   FaBusinessTime,
   FaTruck,
@@ -83,8 +82,17 @@ const PathPreviewCard = ({ path }) => {
 
 const Dashboard = () => {
   const [selectedPath, setSelectedPath] = useState(() => educationalPaths.find(p => p.id === 'engineering') || educationalPaths[0]);
-  const [user, setUser] = useState(null); // State to hold user data
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const tokenFromUrl = searchParams.get('token');
+    if (tokenFromUrl) {
+      localStorage.setItem('token', tokenFromUrl);
+      navigate('/dashboard', { replace: true });
+    }
+  }, [searchParams, navigate]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -95,10 +103,11 @@ const Dashboard = () => {
       }
 
       try {
-const res = await fetch('/api/auth/user', {
+        // --- THIS IS THE KEY CHANGE ---
+        const res = await fetch('https://gyanvistara-backend.onrender.com/api/auth/user', {
           method: 'GET',
           headers: {
-            'x-auth-token': token, // Send the token in the header
+            'x-auth-token': token,
           },
         });
 
@@ -107,7 +116,7 @@ const res = await fetch('/api/auth/user', {
         }
 
         const userData = await res.json();
-        setUser(userData); // Set user data in state
+        setUser(userData);
       } catch (error) {
         console.error(error);
         localStorage.removeItem('token');
@@ -118,7 +127,6 @@ const res = await fetch('/api/auth/user', {
     fetchUserData();
   }, [navigate]);
 
-  // Show a loading state while user data is being fetched
   if (!user) {
     return (
         <div className="bg-white dark:bg-[#0a0f23] min-h-screen flex items-center justify-center text-light-text dark:text-white">
@@ -132,7 +140,6 @@ const res = await fetch('/api/auth/user', {
       <Navbar />
       <main className="container mx-auto px-4 sm:px-6 py-8">
         
-        {/* --- PERSONALIZED WELCOME MESSAGE --- */}
         <div className="text-center mb-12">
             <h1 className="text-3xl md:text-4xl font-bold text-light-text dark:text-white">
                 Welcome, <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">{user.name}!</span>
