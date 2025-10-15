@@ -13,10 +13,9 @@ const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
 
   useEffect(() => {
-    // This effect can be used to listen for storage changes if needed
-    // For now, a simple page reload after login/logout will update the navbar state
+
     setIsAuthenticated(!!localStorage.getItem('token'));
-  }, []); // Re-check on component mount
+  }, []); 
 
   useEffect(() => {
     // ... (your existing theme logic remains unchanged) ...
@@ -76,9 +75,9 @@ const Navbar = () => {
           <a href="#about" className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">
             About
           </a>
-          <a href="#" className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">
+          <Link to="/contact" className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">
             Contact
-          </a>
+          </Link>
         </div>
 
         {/* --- 5. MODIFIED DESKTOP AUTH BUTTONS --- */}
@@ -125,7 +124,7 @@ const Navbar = () => {
           <div className="flex-1 px-6 py-4 flex flex-col space-y-8 overflow-y-auto">
             <a href="#home" onClick={() => setMenuOpen(false)} className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">Home</a>
             <a href="#about" onClick={() => setMenuOpen(false)} className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">About</a>
-            <a href="#contact" onClick={() => setMenuOpen(false)} className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">Contact</a>
+            <Link to="/contact" onClick={() => setMenuOpen(false)} className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">Contact</Link>
             
             {/* --- 6. MODIFIED MOBILE AUTH BUTTONS --- */}
             <div className="flex flex-col space-y-4">
