@@ -25,7 +25,7 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`, {
+      const res = await fetch(`${import.meta.env.DEV ? '' : import.meta.env.VITE_API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -116,16 +116,14 @@ const LoginPage = () => {
 
         {/* Toggle Link */}
         <div className="mt-6 text-center text-sm text-gray-300">
+          <div className="mb-2">
+            <Link to="/forgot-password" className="text-cyan-400 hover:text-cyan-300 font-semibold">
+              Forgot Password?
+            </Link>
+          </div>
           Don't have an account?{' '}
           <Link to="/register" className="text-cyan-400 hover:text-cyan-300 font-semibold">
             Register
-          </Link>
-        </div>
-
-        {/* Forgot Password Link */}
-        <div className="mt-2 text-center text-sm text-gray-300">
-          <Link to="/forgot-password" className="text-cyan-400 hover:text-cyan-300 font-semibold">
-            Forgot Password?
           </Link>
         </div>
       </div>

@@ -106,21 +106,36 @@ exports.login = async (req, res) => {
   }
 };
 
+// @route   GET api/auth/user
+// @desc    Get logged in user
+// @access  Private
+exports.getLoggedInUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+    res.json(user);
+  } catch (err) {
+    res.status(500).send('Server Error');
+  }
+};
+
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
 
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ msg: 'User not found' });
+      return res.status(400).json({ msg: 'User with this email does not exist' });
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
     user.otp = otp;
-    user.otpExpiry = otpExpiry;
+    user.otpExpires = otpExpires;
     await user.save();
 
     const transporter = nodemailer.createTransport({
@@ -131,80 +146,73 @@ exports.forgotPassword = async (req, res) => {
       },
     });
 
+    // Email options
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
       subject: 'Password Reset OTP - GyanVistara',
       text: `Your OTP for password reset is: ${otp}. It will expire in 10 minutes.`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2>Password Reset Request</h2>
+          <p>Hello ${user.name},</p>
+          <p>You requested a password reset for your GyanVistara account.</p>
+          <p>Your OTP is: <strong>${otp}</strong></p>
+          <p>This OTP will expire in 10 minutes.</p>
+          <p>If you didn't request this, please ignore this email.</p>
+          <p>Best regards,<br>GyanVistara Team</p>
+        </div>
+      `,
     };
 
+    // Send email
     await transporter.sendMail(mailOptions);
 
     res.json({ msg: 'OTP sent to your email' });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ msg: 'Server error' });
   }
 };
 
-exports.verifyOtp = async (req, res) => {
-  const { email, otp } = req.body;
-
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ msg: 'User not found' });
-    }
-
-    if (user.otp !== otp || user.otpExpiry < new Date()) {
-      return res.status(400).json({ msg: 'Invalid or expired OTP' });
-    }
-
-    res.json({ msg: 'OTP verified' });
-  } catch (err) {
-    res.status(500).json({ msg: 'Server error' });
-  }
-};
-
+// @route   POST api/auth/reset-password
+// @desc    Reset password using OTP
+// @access  Public
 exports.resetPassword = async (req, res) => {
   const { email, otp, newPassword } = req.body;
 
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-  if (!passwordRegex.test(newPassword)) {
-    return res.status(400).json({
-      msg: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
-    });
-  }
-
   try {
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ msg: 'User not found' });
     }
 
-    if (user.otp !== otp || user.otpExpiry < new Date()) {
+    // Check if OTP matches and hasn't expired
+    if (user.otp !== otp || user.otpExpires < new Date()) {
       return res.status(400).json({ msg: 'Invalid or expired OTP' });
     }
 
+    // Validate new password
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(newPassword)) {
+      return res.status(400).json({
+        msg: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
+      });
+    }
+
+    // Hash new password
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(newPassword, salt);
+
+    // Clear OTP
     user.otp = undefined;
-    user.otpExpiry = undefined;
+    user.otpExpires = undefined;
+
     await user.save();
 
     res.json({ msg: 'Password reset successfully' });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ msg: 'Server error' });
-  }
-};
-
-exports.getLoggedInUser = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id).select('-password');
-    if (!user) {
-      return res.status(404).json({ msg: 'User not found' });
-    }
-    res.json(user);
-  } catch (err) {
-    res.status(500).send('Server Error');
   }
 };

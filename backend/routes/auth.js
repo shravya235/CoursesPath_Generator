@@ -9,13 +9,10 @@ router.post('/register', authController.register);
 // Login a user
 router.post('/login', authController.login);
 
-// Forgot password
+// Forgot password - send OTP
 router.post('/forgot-password', authController.forgotPassword);
 
-// Verify OTP
-router.post('/verify-otp', authController.verifyOtp);
-
-// Reset password
+// Reset password using OTP
 router.post('/reset-password', authController.resetPassword);
 
 // Get the logged-in user
