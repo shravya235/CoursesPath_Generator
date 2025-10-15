@@ -74,7 +74,7 @@ const ContactPage = () => {
                   </div>
                   <div>
                     <p className="text-gray-300 font-semibold">Phone</p>
-                    <p className="text-gray-400">7892848220<br/> 7764776717</p>
+                    <p className="text-gray-400">7892848220<br/>9964996717</p>
                   </div>
                 </div>
                 <div className="flex items-center">
