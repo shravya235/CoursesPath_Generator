@@ -68,3 +68,120 @@ exports.register = async (req, res) => {
     res.status(500).json({ msg: 'Server error' });
   }
 };
+
+// @route   POST api/auth/login
+// @desc    Login a user
+// @access  Public
+exports.login = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    let user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ msg: 'Invalid credentials' });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ msg: 'Invalid credentials' });
+    }
+
+    if (!user.isVerified) {
+      return res.status(400).json({ msg: 'Please verify your email first' });
+    }
+
+    const payload = {
+      user: {
+        id: user.id,
+      },
+    };
+
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: '5 days' },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token });
+      }
+    );
+  } catch (err) {
+    res.status(500).json({ msg: 'Server error' });
+  }
+};
+
+// @route   POST api/auth/send-otp
+// @desc    Send OTP to user
+// @access  Public
+exports.sendOtp = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    let user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ msg: 'User not found' });
+    }
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Set OTP expiration to 10 minutes from now
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+
+    // Save OTP to user
+    user.otp = otp;
+    user.otpExpires = otpExpires;
+    await user.save();
+
+    // Send OTP email
+    await sendOtpEmail(email, otp);
+
+    res.json({ msg: 'OTP sent to your email' });
+  } catch (err) {
+    res.status(500).json({ msg: 'Server error' });
+  }
+};
+
+// @route   POST api/auth/verify-otp
+// @desc    Verify OTP
+// @access  Public
+exports.verifyOtp = async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+    let user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ msg: 'User not found' });
+    }
+
+    if (user.otp !== otp) {
+      return res.status(400).json({ msg: 'Invalid OTP' });
+    }
+
+    if (user.otpExpires < new Date()) {
+      return res.status(400).json({ msg: 'OTP expired' });
+    }
+
+    // Mark user as verified
+    user.isVerified = true;
+    user.otp = undefined;
+    user.otpExpires = undefined;
+    await user.save();
+
+    res.json({ msg: 'OTP verified successfully' });
+  } catch (err) {
+    res.status(500).json({ msg: 'Server error' });
+  }
+};
+
+// @route   GET api/auth/user
+// @desc    Get logged in user
+// @access  Private
+exports.getLoggedInUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ msg: 'Server error' });
+  }
+};
