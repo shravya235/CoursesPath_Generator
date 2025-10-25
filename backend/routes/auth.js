@@ -9,6 +9,12 @@ router.post('/register', authController.register);
 // Login a user
 router.post('/login', authController.login);
 
+// Send OTP (resend)
+router.post('/send-otp', authController.sendOtp);
+
+// Verify OTP
+router.post('/verify-otp', authController.verifyOtp);
+
 // Get the logged-in user
 router.get('/user', authMiddleware, authController.getLoggedInUser);
 
