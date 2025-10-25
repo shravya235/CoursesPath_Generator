@@ -1,10 +1,20 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import PathCard from '../components/PathCard';
 import AboutSection from '../components/AboutSection';
 
 const HomePage = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === '#about') {
+      const element = document.getElementById('about');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [location]);
   const paths = [
     { title: 'Engineering', tags: ['PCM Required', '4-Year B.Tech', 'Top Colleges'], gradient: 'bg-gradient-magenta-cyan', rotation: 'md:rotate-2' },
     { title: 'Medical', tags: ['Exam: NEET', '5-Year MBBS', 'High Demand'], gradient: 'bg-gradient-purple-blue', rotation: 'md:-rotate-2' },

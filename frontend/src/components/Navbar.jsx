@@ -1,12 +1,13 @@
 // src/components/Navbar.jsx
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // 1. Import useNavigate
+import { Link, useNavigate, useLocation } from 'react-router-dom'; // 1. Import useNavigate and useLocation
 import { HiMenu, HiX } from 'react-icons/hi';
 
 const Navbar = () => {
   const [theme, setTheme] = useState('light');
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate(); // 2. Initialize navigate
+  const location = useLocation(); // Initialize location
 
   // 3. Check for token to see if user is authenticated
   // We use a state that updates on changes to ensure re-renders
@@ -15,7 +16,14 @@ const Navbar = () => {
   useEffect(() => {
 
     setIsAuthenticated(!!localStorage.getItem('token'));
-  }, []); 
+  }, []);
+
+  // Handle Home link click to scroll to top
+  const handleHomeClick = () => {
+    if (location.pathname === '/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     // ... (your existing theme logic remains unchanged) ...
@@ -69,12 +77,12 @@ const Navbar = () => {
           {menuOpen ? <HiX size={24} /> : <HiMenu size={24} />}
         </button>
         <div className="hidden md:flex items-center md:space-x-6 lg:space-x-10">
-          <a href="#home" className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">
+          <Link to="/" onClick={handleHomeClick} className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">
             Home
-          </a>
-          <a href="#about" className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">
+          </Link>
+          <Link to="/#about" className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">
             About
-          </a>
+          </Link>
           <Link to="/contact" className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">
             Contact
           </Link>
@@ -122,8 +130,8 @@ const Navbar = () => {
             </span>
           </div>
           <div className="flex-1 px-6 py-4 flex flex-col space-y-8 overflow-y-auto">
-            <a href="#home" onClick={() => setMenuOpen(false)} className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">Home</a>
-            <a href="#about" onClick={() => setMenuOpen(false)} className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">About</a>
+            <Link to="/" onClick={() => { handleHomeClick(); setMenuOpen(false); }} className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">Home</Link>
+            <Link to="/#about" onClick={() => setMenuOpen(false)} className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">About</Link>
             <Link to="/contact" onClick={() => setMenuOpen(false)} className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">Contact</Link>
             
             {/* --- 6. MODIFIED MOBILE AUTH BUTTONS --- */}
