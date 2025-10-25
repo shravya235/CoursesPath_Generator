@@ -3,8 +3,10 @@ import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import RegisterPage from './pages/auth/RegisterPage';
 import LoginPage from './pages/auth/LoginPage';
+import OtpEntryPage from './pages/auth/OtpEntryPage';
 import Dashboard from './pages/Dashboard';
 import ContactPage from './pages/ContactPage';
+import TermsPage from './pages/TermsPage';
 import PrivateRoute from './components/PrivateRoute'; // 1. Import PrivateRoute
 
 function App() {
@@ -14,7 +16,9 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/otp-entry" element={<OtpEntryPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/terms" element={<TermsPage />} />
         {/* 2. Wrap the Dashboard route */}
         <Route
           path="/dashboard"

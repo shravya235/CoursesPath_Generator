@@ -15,7 +15,7 @@ export default {
         // Light theme colors
         'light-bg': '#F9FAFB',
         'light-navbar-bg': '#FFFFFF',
-        'light-text': '#1F2937',
+        'light-text': '#000000',
       },
       // 2. Add your custom background gradients
       backgroundImage: {
