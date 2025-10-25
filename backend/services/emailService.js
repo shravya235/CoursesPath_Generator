@@ -1,19 +1,7 @@
-const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
 require('dotenv').config();
 
-// Create transporter
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465, // Use 465 for SSL
-  secure: true, // Use SSL
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  tls: {
-    rejectUnauthorized: false // This can sometimes help with cloud platform issues
-  }
-});
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Function to send OTP email
 const sendOtpEmail = async (email, otp) => {
@@ -158,7 +146,7 @@ const sendOtpEmail = async (email, otp) => {
   };
 
   try {
-    await transporter.sendMail(mailOptions);
+    await sgMail.send(mailOptions);
     console.log('OTP email sent successfully');
   } catch (error) {
     console.error('Error sending OTP email:', error);
@@ -242,7 +230,7 @@ const sendContactEmail = async (name, email, message) => {
   };
 
   try {
-    await transporter.sendMail(mailOptions);
+    await sgMail.send(mailOptions);
     console.log('Contact email sent successfully');
   } catch (error) {
     console.error('Error sending contact email:', error);
