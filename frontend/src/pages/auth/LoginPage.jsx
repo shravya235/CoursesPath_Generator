@@ -9,7 +9,9 @@ const LoginPage = () => {
   const [error, setError] = useState(''); // State for handling errors
   const [loading, setLoading] = useState(false); // State for loading indicator
   const [theme, setTheme] = useState('dark'); // Default to dark for auth pages
+  const [successMessage, setSuccessMessage] = useState(''); // State for success message
   const navigate = useNavigate(); // Hook for navigation
+
 
   useEffect(() => {
     // Check for saved theme or default to dark
@@ -26,6 +28,13 @@ const LoginPage = () => {
       setTheme('dark');
       document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');
+    }
+
+    // Check for success message from localStorage
+    const storedMessage = localStorage.getItem('successMessage');
+    if (storedMessage) {
+      setSuccessMessage(storedMessage);
+      localStorage.removeItem('successMessage'); // Clear it after displaying
     }
   }, []);
 
@@ -143,6 +152,9 @@ const LoginPage = () => {
               required
             />
           </div>
+
+          {/* Success Message */}
+          {successMessage && <p className="text-green-400 text-sm text-center">{successMessage}</p>}
 
           {/* --- ERROR MESSAGE DISPLAY --- */}
           {error && <p className="text-red-400 text-sm text-center">{error}</p>}

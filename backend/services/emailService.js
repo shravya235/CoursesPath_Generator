@@ -13,9 +13,9 @@ const transporter = nodemailer.createTransport({
 // Function to send OTP email
 const sendOtpEmail = async (email, otp) => {
   const mailOptions = {
-    from: process.env.EMAIL_USER,
+    from: `GyanVistara <${process.env.EMAIL_USER}>`,
     to: email,
-    subject: 'Your Verification Code',
+    subject: 'Your GyanVistara Verification Code',
     html: `
       <!DOCTYPE html>
       <html lang="en">
@@ -23,147 +23,126 @@ const sendOtpEmail = async (email, otp) => {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Your Verification Code</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet">
         <style>
           body {
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0a0f23;
-            min-height: 100vh;
-            position: relative;
-            overflow: hidden;
+            font-family: 'Inter', Arial, sans-serif; /* */
+            background-color: #0a0f23; /* Dark background */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
           }
-
-
-
           .email-container {
-            position: relative;
-            z-index: 2;
             max-width: 600px;
             margin: 40px auto;
             padding: 0 20px;
           }
-
           .email-card {
-            background: rgba(31, 41, 55, 0.5);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(6, 182, 212, 0.5);
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
-                        0 0 20px rgba(6, 182, 212, 0.1);
+            background-color: #111827; /* Solid dark card background */
+            border: 1px solid #0e7490; /* Solid cyan border */
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
           }
-
           .logo {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
           }
-
           .logo-text {
-            background: linear-gradient(135deg, #ec4899, #f97316, #06b6d4);
+            /* Gradient text effect */
+            background: linear-gradient(135deg, #8A2BE2, #EC4899, #00FFFF);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
+            text-fill-color: transparent;
+            /* Fallback color */
+            color: #E5E7EB;
+            font-size: 26px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
             margin: 0;
             text-transform: uppercase;
           }
-
           .headline {
             text-align: center;
-            color: #ffffff;
-            font-size: 24px;
-            font-weight: 700;
+            color: #E5E7EB;
+            font-size: 22px;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 30px;
-            font-family: sans-serif;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
           }
-
-          .otp-container {
-            background: #f4f4f4;
-            border-radius: 16px;
-            padding: 24px;
-            text-align: center;
-            margin: 30px 0;
-            border: 2px solid rgba(6, 182, 212, 0.2);
-          }
-
-          .otp-code {
-            font-size: 42px;
-            font-weight: 900;
-            color: #000000;
-            letter-spacing: 12px;
-            font-family: 'Courier New', monospace;
-            margin: 0;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          }
-
           .body-text {
-            color: #9ca3af;
-            font-size: 14px;
+            color: #D1D5DB;
+            font-size: 15px;
             line-height: 1.6;
             text-align: center;
-            margin: 20px 0;
+            margin: 15px 0;
+            font-weight: 400;
           }
-
+          .otp-container {
+            background-color: #1F2937;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center; /* Ensure container aligns center */
+            margin: 25px 0;
+          }
+          .otp-code {
+            font-size: 38px;
+            font-weight: 800;
+            color: #FFFFFF;
+            letter-spacing: 6px;
+            font-family: 'Inter', Arial, sans-serif; /* Changed font */
+            margin: 0;
+            text-align: center; /* Ensure text itself is centered */
+            user-select: all;
+            -webkit-user-select: all;
+            -moz-user-select: all;
+          }
+          /* Removed .hidden-otp class */
           .footer {
             text-align: center;
-            color: #6b7280;
+            color: #9CA3AF;
             font-size: 12px;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(6, 182, 212, 0.2);
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #0e7490;
           }
-
           .footer-text {
-            margin: 5px 0;
+            margin: 4px 0;
+            line-height: 1.5;
+            color: #9CA3AF; /* Explicit color */
           }
-
-          @media (max-width: 640px) {
-            .email-card {
-              padding: 30px 20px;
-              border-radius: 16px;
-            }
-
-            .logo-text {
-              font-size: 24px;
-            }
-
-            .headline {
-              font-size: 20px;
-            }
-
-            .otp-code {
-              font-size: 36px;
-              letter-spacing: 8px;
-            }
+          @media (max-width: 600px) {
+            .email-card { padding: 25px; border-radius: 12px; }
+            .logo-text { font-size: 22px; letter-spacing: 1px; }
+            .headline { font-size: 20px; }
+            .otp-code { font-size: 32px; letter-spacing: 4px; }
+            .body-text, .footer, .footer-text { font-size: 14px; }
           }
         </style>
       </head>
       <body>
-
         <div class="email-container">
           <div class="email-card">
             <div class="logo">
               <h1 class="logo-text">GYAN VISTARA</h1>
             </div>
-
             <h2 class="headline">Your Verification Code</h2>
-
-            <div class="otp-container">
-              <p class="otp-code">${otp.slice(0, 3)} ${otp.slice(3)}</p>
-            </div>
-
             <div class="body-text">
-              <p>This code will expire in 10 minutes.</p>
-              <p>If you did not request this code, please ignore this email.</p>
+              <p>Hello,</p>
+              <p>Your one-time password (OTP) for account verification is:</p>
             </div>
-
+            <div class="otp-container">
+              <p class="otp-code">
+                ${otp}
+              </p>
+            </div>
             <div class="footer">
-              <p class="footer-text">Best regards,</p>
+              <p class="footer-text">This code will expire in 10 minutes.</p>
+              <p class="footer-text">If you did not request this code, please ignore this email or contact support.</p>
+              <p class="footer-text" style="margin-top: 10px;">Best regards,</p>
               <p class="footer-text">GyanVistara Team</p>
             </div>
           </div>
@@ -182,12 +161,13 @@ const sendOtpEmail = async (email, otp) => {
   }
 };
 
-// Function to send contact email
+// Function to send contact email (No changes needed for OTP centering/span removal)
 const sendContactEmail = async (name, email, message) => {
   const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: 'gyanvistara.web@gmail.com', // Send to the contact email
-    subject: `New Contact Message from ${name}`,
+    from: `GyanVistara Contact Form <${process.env.EMAIL_USER}>`,
+    to: 'gyanvistara.web@gmail.com',
+    replyTo: email,
+    subject: `New Contact Message from ${name} via GyanVistara`,
     html: `
       <!DOCTYPE html>
       <html lang="en">
@@ -195,117 +175,35 @@ const sendContactEmail = async (name, email, message) => {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>New Contact Message</title>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet">
         <style>
           body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-            background: #0a0f23;
-            min-height: 100vh;
+            margin: 0; padding: 0; font-family: 'Inter', Arial, sans-serif; background-color: #0a0f23; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
           }
-
-          .email-container {
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 0 20px;
-          }
-
-          .email-card {
-            background: rgba(31, 41, 55, 0.5);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(6, 182, 212, 0.5);
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 20px rgba(6, 182, 212, 0.1);
-          }
-
-          .logo {
-            text-align: center;
-            margin-bottom: 30px;
-          }
-
+          .email-container { max-width: 600px; margin: 40px auto; padding: 0 20px; }
+          .email-card { background-color: #111827; border: 1px solid #0e7490; border-radius: 16px; padding: 35px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); }
+          .logo { text-align: center; margin-bottom: 25px; }
           .logo-text {
-            background: linear-gradient(135deg, #ec4899, #f97316, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 28px;
-            font-weight: 900;
-            letter-spacing: -0.5px;
-            margin: 0;
-            text-transform: uppercase;
+            background: linear-gradient(135deg, #8A2BE2, #EC4899, #00FFFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent;
+            color: #E5E7EB; /* Fallback color */
+            font-size: 26px; font-weight: 900; letter-spacing: 1.5px; margin: 0; text-transform: uppercase;
           }
-
-          .headline {
-            text-align: center;
-            color: #E5E7EB;
-            font-size: 24px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 30px;
-          }
-
-          .sender-info {
-            color: #D1D5DB;
-            font-size: 16px;
-            text-align: center;
-            margin: 20px 0;
-          }
-
-          .sender-email {
-            color: #22D3EE;
-            text-decoration: none;
-          }
-
-          .divider {
-            height: 1px;
-            background: rgba(6, 182, 212, 0.2);
-            margin: 30px 0;
-          }
-
-          .message-container {
-            background: rgba(55, 65, 81, 0.5);
-            border-radius: 8px;
-            padding: 24px;
-            margin: 30px 0;
-          }
-
-          .message-text {
-            color: #E5E7EB;
-            font-size: 16px;
-            line-height: 1.6;
-            margin: 0;
-            white-space: pre-wrap;
-          }
-
-          .footer {
-            text-align: center;
-            color: #9CA3AF;
-            font-size: 14px;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(6, 182, 212, 0.2);
-          }
-
-          .footer-text {
-            margin: 5px 0;
-          }
-
-          @media (max-width: 640px) {
-            .email-card {
-              padding: 30px 20px;
-              border-radius: 12px;
-            }
-
-            .logo-text {
-              font-size: 24px;
-            }
-
-            .headline {
-              font-size: 20px;
-            }
+          .headline { text-align: center; color: #E5E7EB; font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px; }
+          .sender-info { color: #D1D5DB; font-size: 15px; text-align: center; margin: 15px 0; line-height: 1.6; font-weight: 400; }
+          .sender-email-link { color: #22D3EE; text-decoration: none; font-weight: 500; }
+          .sender-email-link:hover { text-decoration: underline; }
+          .divider { height: 1px; background: #0e7490; margin: 25px 0; }
+          .message-label { color: #9CA3AF; font-size: 14px; margin-bottom: 10px; display: block; font-weight: 500; }
+          .message-container { background-color: #1F2937; border-radius: 12px; padding: 20px; margin-top: 10px; }
+          .message-text { color: #E5E7EB; font-size: 15px; line-height: 1.6; margin: 0; white-space: pre-wrap; word-wrap: break-word; font-weight: 400; }
+          .footer { text-align: center; color: #9CA3AF; font-size: 12px; margin-top: 25px; padding-top: 15px; border-top: 1px solid #0e7490; }
+           .footer-text { margin: 4px 0; line-height: 1.5; color: #9CA3AF; }
+          @media (max-width: 600px) {
+            .email-card { padding: 25px; border-radius: 12px; }
+            .logo-text { font-size: 22px; letter-spacing: 1px;}
+            .headline { font-size: 20px; }
+            .sender-info, .message-text, .message-label { font-size: 14px; }
+            .footer, .footer-text { font-size: 11px; }
           }
         </style>
       </head>
@@ -315,22 +213,20 @@ const sendContactEmail = async (name, email, message) => {
             <div class="logo">
               <h1 class="logo-text">GYAN VISTARA</h1>
             </div>
-
-            <h2 class="headline">NEW CONTACT MESSAGE</h2>
-
+            <h2 class="headline">New Contact Message</h2>
             <div class="sender-info">
-              <p>From: ${name} <a href="mailto:${email}" class="sender-email">${email}</a></p>
+              Received from: <strong>${name}</strong>
+              <br>
+              Email: <a href="mailto:${email}" class="sender-email-link">${email}</a>
             </div>
-
             <div class="divider"></div>
-
+            <span class="message-label">Message:</span>
             <div class="message-container">
               <p class="message-text">${message}</p>
             </div>
-
             <div class="footer">
               <p class="footer-text">This message was sent from the GyanVistara contact form.</p>
-              <p class="footer-text">Best regards,</p>
+              <p class="footer-text" style="margin-top: 10px;">Best regards,</p>
               <p class="footer-text">GyanVistara Team</p>
             </div>
           </div>

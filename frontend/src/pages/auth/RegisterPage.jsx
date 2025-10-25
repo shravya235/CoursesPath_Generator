@@ -120,7 +120,7 @@ const RegisterPage = () => {
       }
 
       // If registration is successful (OTP sent), redirect to OTP entry page
-      navigate('/otp-entry', { state: { email: formData.email } });
+      navigate('/login');
     } catch (err) {
       setError(err.message);
     } finally {

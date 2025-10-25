@@ -49,21 +49,7 @@ exports.register = async (req, res) => {
 
     await user.save();
 
-    // Generate 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // Set OTP expiration to 10 minutes from now
-    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
-
-    // Save OTP to user
-    user.otp = otp;
-    user.otpExpires = otpExpires;
-    await user.save();
-
-    // Send OTP email
-    await sendOtpEmail(email, otp);
-
-    res.json({ msg: 'Registration successful. OTP sent to your email. Please verify to complete registration.' });
+    res.json({ msg: 'Registration successful. Please log in to continue.' });
   } catch (err) {
     res.status(500).json({ msg: 'Server error' });
   }
@@ -87,7 +73,21 @@ exports.login = async (req, res) => {
     }
 
     if (!user.isVerified) {
-      return res.status(400).json({ msg: 'Please verify your email first' });
+      // Generate 6-digit OTP
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+      // Set OTP expiration to 10 minutes from now
+      const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+
+      // Save OTP to user
+      user.otp = otp;
+      user.otpExpires = otpExpires;
+      await user.save();
+
+      // Send OTP email
+      await sendOtpEmail(email, otp);
+
+      return res.status(400).json({ msg: 'Please verify your email first. OTP sent to your email.' });
     }
 
     const payload = {

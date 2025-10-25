@@ -91,9 +91,9 @@ const OtpEntryPage = () => {
         throw new Error(data.msg || 'Something went wrong');
       }
 
-      // If OTP verification is successful, save the token and redirect
-      localStorage.setItem('token', data.token);
-      navigate('/dashboard');
+      // OTP verification successful, save message to localStorage and redirect to login page
+      localStorage.setItem('successMessage', 'Email verified successfully! Please log in.');
+      navigate('/login');
     } catch (err) {
       setError(err.message);
     } finally {
