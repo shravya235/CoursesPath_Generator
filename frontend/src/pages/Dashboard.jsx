@@ -28,47 +28,63 @@ const educationalPaths = [
     { id: 'architecture', name: 'Architecture', icon: <BsBuilding size={50} />, description: 'Plan and design buildings and physical structures, blending art and science to create functional spaces.' },
 ];
 
-const PathList = ({ paths, selectedPath, onPathHover }) => {
+const PathList = ({ paths, selectedPath, onPathHover, searchTerm }) => {
+  // Determine if the full list is showing (no search term) or if it's filtered
+  const isFiltered = searchTerm.trim().length > 0;
+  
+  // Decide which paths to display based on whether filtering is active
+  const displayPaths = isFiltered ? paths : educationalPaths; // Show all if not searching
+
   return (
-    <div className="bg-gray-100 dark:bg-gray-800/30 backdrop-blur-lg rounded-xl p-4 sm:p-6 border border-gray-300 dark:border-cyan-700/50 shadow-lg">
-      <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Career Paths</h2>
+    <div className="bg-gray-100 rounded-xl p-4 sm:p-6 border border-gray-300 shadow-lg"> {/* Light theme bg/border */}
+      <h2 className="text-xl font-bold text-gray-900 mb-4">Career Paths</h2> {/* Light theme text */}
       <div className="space-y-2">
-        {paths.map((path) => (
-          <button
-            key={path.id}
-            onMouseEnter={() => onPathHover(path)}
-            className={`w-full text-left p-3 rounded-lg transition-all duration-200 ${
-              selectedPath?.id === path.id
-                ? 'bg-cyan-100 dark:bg-cyan-500/20 ring-1 ring-cyan-500 text-cyan-700 dark:text-cyan-300'
-                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/50'
-            }`}
-          >
-            {path.name}
-          </button>
-        ))}
+        {displayPaths.map((path) => {
+          // Check if the current path matches the search term OR if no search is active
+          const isMatching = !isFiltered || path.name.toLowerCase().includes(searchTerm.toLowerCase());
+          
+          return (
+            <button
+              key={path.id}
+              onMouseEnter={() => isMatching && onPathHover(path)} // Only allow hover selection if matching
+              onClick={() => isMatching && onPathHover(path)} // Only allow click selection if matching
+              className={`w-full text-left p-3 rounded-lg transition-all duration-200 ${
+                selectedPath?.id === path.id && isMatching // Highlight only if selected AND matching/visible
+                  ? 'bg-cyan-100 ring-1 ring-cyan-500 text-cyan-700' // Light theme selected
+                  : isMatching
+                  ? 'text-gray-700 hover:bg-gray-200' // Light theme default/hover
+                  : 'text-gray-400 opacity-50 cursor-not-allowed' // Style for non-matching items during search
+              }`}
+              disabled={!isMatching} // Disable button if it doesn't match search
+            >
+              {path.name}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
 };
 
+
 const PathPreviewCard = ({ path }) => {
   if (!path) {
     return (
-        <div className="bg-white dark:bg-gray-800/30 backdrop-blur-lg rounded-2xl p-8 border border-gray-200 dark:border-cyan-700/50 shadow-2xl h-full flex items-center justify-center">
-            <p className="text-gray-500 dark:text-gray-400">Hover over a career path to see details.</p>
+        <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-2xl h-full flex items-center justify-center"> {/* Light theme bg/border */}
+            <p className="text-gray-500">Hover over or search for a career path to see details.</p> {/* Adjusted text */}
         </div>
     );
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800/30 backdrop-blur-lg rounded-2xl p-8 border border-gray-200 dark:border-cyan-700/50 shadow-2xl">
+    <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-2xl"> {/* Light theme bg/border */}
       <div className="flex items-center mb-4">
-        <div className="text-cyan-600 dark:text-cyan-400 mr-4">
+        <div className="text-cyan-600 mr-4"> {/* Light theme icon color */}
           {path.icon}
         </div>
-        <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{path.name}</h3>
+        <h3 className="text-2xl font-bold text-gray-900">{path.name}</h3> {/* Light theme text */}
       </div>
-      <p className="text-gray-700 dark:text-gray-300 mb-6">{path.description}</p>
+      <p className="text-gray-700 mb-6">{path.description}</p> {/* Light theme text */}
       <Link
         to={`/path/${path.id}`}
         className="inline-block bg-gradient-electric-orange text-white font-extrabold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
@@ -81,33 +97,56 @@ const PathPreviewCard = ({ path }) => {
 
 
 const Dashboard = () => {
-  const [selectedPath, setSelectedPath] = useState(() => educationalPaths.find(p => p.id === 'engineering') || educationalPaths[0]);
+  // Set initial selected path explicitly, e.g., 'medical'
+  const [selectedPath, setSelectedPath] = useState(() => educationalPaths.find(p => p.id === 'medical') || educationalPaths[0]);
   const [user, setUser] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
+  // Calculate filtered paths based on the search term
+  const filteredPaths = educationalPaths.filter(path =>
+    path.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Effect to handle token from URL (e.g., after OAuth redirects)
   useEffect(() => {
     const tokenFromUrl = searchParams.get('token');
     if (tokenFromUrl) {
       localStorage.setItem('token', tokenFromUrl);
-      navigate('/dashboard', { replace: true });
+      navigate('/dashboard', { replace: true }); // Remove token from URL
     }
   }, [searchParams, navigate]);
 
+  // Effect to update the selected path when the search term changes
+  // It selects the first item from the filtered list automatically
+  useEffect(() => {
+    if (searchTerm.trim() === '') {
+      // If search is cleared, you might want to reset to a default or keep the last selected
+       setSelectedPath(educationalPaths.find(p => p.id === 'medical') || educationalPaths[0]); // Reset to initial default
+    } else if (filteredPaths.length > 0) {
+      // If there are results, select the first one
+      setSelectedPath(filteredPaths[0]);
+    } else {
+      // If no results, clear the selection
+      setSelectedPath(null);
+    }
+  }, [searchTerm]); // Rerun only when searchTerm changes
+
+  // Effect to fetch user data on component mount
   useEffect(() => {
     const fetchUserData = async () => {
       const token = localStorage.getItem('token');
       if (!token) {
-        navigate('/login');
+        navigate('/login'); // Redirect to login if no token
         return;
       }
 
       try {
-        // --- THIS IS THE KEY CHANGE ---
-        const res = await fetch(`${import.meta.env.DEV ? '' : import.meta.env.VITE_API_BASE_URL}/api/auth/user`, {
+        const res = await fetch(`${import.meta.env.DEV ? '' : import.meta.env.VITE_API_BASE_URL}/api/auth/user`, { //
           method: 'GET',
           headers: {
-            'x-auth-token': token,
+            'x-auth-token': token, // Send token in header
           },
         });
 
@@ -116,54 +155,70 @@ const Dashboard = () => {
         }
 
         const userData = await res.json();
-        setUser(userData);
+        setUser(userData); // Set user state
       } catch (error) {
         console.error(error);
-        localStorage.removeItem('token');
-        navigate('/login');
+        localStorage.removeItem('token'); // Clear invalid token
+        navigate('/login'); // Redirect to login on error
       }
     };
 
     fetchUserData();
-  }, [navigate]);
+  }, [navigate]); // Rerun if navigate function changes (shouldn't happen often)
 
+  // Loading state while fetching user data
   if (!user) {
     return (
-        <div className="bg-white dark:bg-[#0a0f23] min-h-screen flex items-center justify-center text-light-text dark:text-white">
+        <div className="bg-white min-h-screen flex items-center justify-center text-light-text"> {/* Light theme loading */}
             <p>Loading your dashboard...</p>
         </div>
     );
   }
 
+  // Main component render
   return (
-    <div className="bg-[#F9FAFB] dark:bg-[#0a0f23] min-h-screen text-gray-900 dark:text-gray-100 pt-20 transition-colors duration-500">
+    // Enforce light theme background and text color
+    <div className="bg-[#F9FAFB] min-h-screen text-gray-900 pt-20"> {/* */}
       <Navbar />
       <main className="container mx-auto px-4 sm:px-6 py-8">
 
+        {/* Welcome Message */}
         <div className="text-center mb-12">
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900"> {/* Light theme text */}
                 Welcome, <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">{user.name}!</span>
             </h1>
-            <p className="text-gray-700 dark:text-gray-400 mt-2">Let's find the perfect career path for you.</p>
+            <p className="text-gray-700 mt-2">Let's find the perfect career path for you.</p> {/* Light theme text */}
         </div>
 
+        {/* Search Bar */}
         <div className="text-center mb-8">
           <div className="relative w-full max-w-md mx-auto px-4 sm:px-0">
             <input
               type="text"
               placeholder="Search career paths..."
-              className="w-full pl-12 pr-4 py-3 bg-gray-200 dark:bg-gray-800 backdrop-blur-lg rounded-full border border-gray-300 dark:border-cyan-700/50 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors duration-300"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              // Light theme styling for search input
+              className="w-full pl-12 pr-4 py-3 bg-gray-200 rounded-full border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
             />
-            <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-400" size={20} />
+            <FaSearch className="absolute left-8 top-1/2 transform -translate-y-1/2 text-gray-600" size={20} /> {/* Adjusted icon position */}
           </div>
         </div>
 
+        {/* Main Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          {/* Sidebar */}
           <div className="lg:col-span-1">
-            <PathList paths={educationalPaths} selectedPath={selectedPath} onPathHover={setSelectedPath} />
+            <PathList
+              paths={educationalPaths} // Pass full list for display logic inside
+              selectedPath={selectedPath}
+              onPathHover={setSelectedPath} // Allows hover/click to update selection
+              searchTerm={searchTerm} // Pass search term for filtering display
+             />
           </div>
+          {/* Preview Card */}
           <div className="lg:col-span-2 xl:col-span-3">
-            <PathPreviewCard path={selectedPath} />
+            <PathPreviewCard path={selectedPath} /> {/* Display the currently selected path */}
           </div>
         </div>
       </main>

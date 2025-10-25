@@ -18,4 +18,7 @@ router.post('/verify-otp', authController.verifyOtp);
 // Get the logged-in user
 router.get('/user', authMiddleware, authController.getLoggedInUser);
 
+// Contact form submission
+router.post('/contact', authController.sendContactMessage);
+
 module.exports = router;

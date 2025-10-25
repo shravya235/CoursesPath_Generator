@@ -182,4 +182,171 @@ const sendOtpEmail = async (email, otp) => {
   }
 };
 
-module.exports = { sendOtpEmail };
+// Function to send contact email
+const sendContactEmail = async (name, email, message) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: 'gyanvistara.web@gmail.com', // Send to the contact email
+    subject: `New Contact Message from ${name}`,
+    html: `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>New Contact Message</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+        <style>
+          body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: #0a0f23;
+            min-height: 100vh;
+          }
+
+          .email-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 0 20px;
+          }
+
+          .email-card {
+            background: rgba(31, 41, 55, 0.5);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(6, 182, 212, 0.5);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 20px rgba(6, 182, 212, 0.1);
+          }
+
+          .logo {
+            text-align: center;
+            margin-bottom: 30px;
+          }
+
+          .logo-text {
+            background: linear-gradient(135deg, #ec4899, #f97316, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            margin: 0;
+            text-transform: uppercase;
+          }
+
+          .headline {
+            text-align: center;
+            color: #E5E7EB;
+            font-size: 24px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+          }
+
+          .sender-info {
+            color: #D1D5DB;
+            font-size: 16px;
+            text-align: center;
+            margin: 20px 0;
+          }
+
+          .sender-email {
+            color: #22D3EE;
+            text-decoration: none;
+          }
+
+          .divider {
+            height: 1px;
+            background: rgba(6, 182, 212, 0.2);
+            margin: 30px 0;
+          }
+
+          .message-container {
+            background: rgba(55, 65, 81, 0.5);
+            border-radius: 8px;
+            padding: 24px;
+            margin: 30px 0;
+          }
+
+          .message-text {
+            color: #E5E7EB;
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 0;
+            white-space: pre-wrap;
+          }
+
+          .footer {
+            text-align: center;
+            color: #9CA3AF;
+            font-size: 14px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(6, 182, 212, 0.2);
+          }
+
+          .footer-text {
+            margin: 5px 0;
+          }
+
+          @media (max-width: 640px) {
+            .email-card {
+              padding: 30px 20px;
+              border-radius: 12px;
+            }
+
+            .logo-text {
+              font-size: 24px;
+            }
+
+            .headline {
+              font-size: 20px;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="email-container">
+          <div class="email-card">
+            <div class="logo">
+              <h1 class="logo-text">GYAN VISTARA</h1>
+            </div>
+
+            <h2 class="headline">NEW CONTACT MESSAGE</h2>
+
+            <div class="sender-info">
+              <p>From: ${name} <a href="mailto:${email}" class="sender-email">${email}</a></p>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="message-container">
+              <p class="message-text">${message}</p>
+            </div>
+
+            <div class="footer">
+              <p class="footer-text">This message was sent from the GyanVistara contact form.</p>
+              <p class="footer-text">Best regards,</p>
+              <p class="footer-text">GyanVistara Team</p>
+            </div>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Contact email sent successfully');
+  } catch (error) {
+    console.error('Error sending contact email:', error);
+    throw new Error('Failed to send contact email');
+  }
+};
+
+module.exports = { sendOtpEmail, sendContactEmail };

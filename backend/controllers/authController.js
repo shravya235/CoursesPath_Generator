@@ -185,3 +185,32 @@ exports.getLoggedInUser = async (req, res) => {
     res.status(500).json({ msg: 'Server error' });
   }
 };
+
+// @route   POST api/auth/contact
+// @desc    Send contact message
+// @access  Public
+exports.sendContactMessage = async (req, res) => {
+  const { name, email, message } = req.body;
+
+  // Validate required fields
+  if (!name || !email || !message) {
+    return res.status(400).json({ msg: 'All fields are required' });
+  }
+
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ msg: 'Please provide a valid email address' });
+  }
+
+  try {
+    // Send contact email
+    const { sendContactEmail } = require('../services/emailService');
+    await sendContactEmail(name, email, message);
+
+    res.json({ msg: 'Message sent successfully' });
+  } catch (err) {
+    console.error('Error sending contact message:', err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+};

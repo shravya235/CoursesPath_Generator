@@ -9,6 +9,7 @@ const ContactPage = () => {
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,11 +22,39 @@ const ContactPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
+    setError('');
+
+    try {
+      const res = await fetch('/api/auth/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+        }),
+      });
+
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error('Server error: Invalid response');
+      }
+
+      if (!res.ok) {
+        throw new Error(data.msg || 'Something went wrong');
+      }
+
       setSuccess(true);
-      setLoading(false);
       setFormData({ name: '', email: '', message: '' });
-    }, 1000);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -65,7 +94,7 @@ const ContactPage = () => {
                   </div>
                   <div>
                     <p className="text-gray-700 dark:text-gray-300 font-semibold">Email</p>
-                    <p className="text-gray-600 dark:text-gray-400">shravyar235@gmail.com<br/>jitheshp777@gmail.com</p>
+                    <p className="text-gray-600 dark:text-gray-400">gyanvistara.web@gmail.com</p>
                   </div>
                 </div>
                 <div className="flex items-center">
@@ -95,6 +124,11 @@ const ContactPage = () => {
               {success && (
                 <div className="mb-6 p-4 bg-green-100 dark:bg-green-500/20 border border-green-300 dark:border-green-500 rounded-lg">
                   <p className="text-green-800 dark:text-green-400">Thank you for your message! We'll get back to you soon.</p>
+                </div>
+              )}
+              {error && (
+                <div className="mb-6 p-4 bg-red-100 dark:bg-red-500/20 border border-red-300 dark:border-red-500 rounded-lg">
+                  <p className="text-red-800 dark:text-red-400">{error}</p>
                 </div>
               )}
               <form onSubmit={handleSubmit} className="space-y-6">
