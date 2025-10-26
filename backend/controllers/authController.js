@@ -49,7 +49,21 @@ exports.register = async (req, res) => {
 
     await user.save();
 
-    res.json({ msg: 'Registration successful. Please log in to continue.' });
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Set OTP expiration to 10 minutes from now
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+
+    // Save OTP to user
+    user.otp = otp;
+    user.otpExpires = otpExpires;
+    await user.save();
+
+    // Send OTP email
+    await sendOtpEmail(email, otp);
+
+    res.json({ msg: 'Registration successful. Please verify your email.' });
   } catch (err) {
     res.status(500).json({ msg: 'Server error' });
   }
@@ -181,6 +195,81 @@ exports.getLoggedInUser = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
     res.json(user);
+  } catch (err) {
+    res.status(500).json({ msg: 'Server error' });
+  }
+};
+
+// @route   POST api/auth/forgot-password
+// @desc    Send OTP for password reset
+// @access  Public
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    let user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ msg: 'User not found' });
+    }
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Set OTP expiration to 10 minutes from now
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+
+    // Save OTP to user (reuse otp fields)
+    user.otp = otp;
+    user.otpExpires = otpExpires;
+    await user.save();
+
+    // Send OTP email
+    await sendOtpEmail(email, otp);
+
+    res.json({ msg: 'Password reset OTP sent to your email' });
+  } catch (err) {
+    res.status(500).json({ msg: 'Server error' });
+  }
+};
+
+// @route   POST api/auth/reset-password
+// @desc    Reset password with OTP
+// @access  Public
+exports.resetPassword = async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  // Password validation
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  if (!passwordRegex.test(newPassword)) {
+    return res.status(400).json({
+      msg: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
+    });
+  }
+
+  try {
+    let user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ msg: 'User not found' });
+    }
+
+    if (user.otp !== otp) {
+      return res.status(400).json({ msg: 'Invalid OTP' });
+    }
+
+    if (user.otpExpires < new Date()) {
+      return res.status(400).json({ msg: 'OTP expired' });
+    }
+
+    // Hash new password
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+
+    // Clear OTP
+    user.otp = undefined;
+    user.otpExpires = undefined;
+    await user.save();
+
+    res.json({ msg: 'Password reset successfully' });
   } catch (err) {
     res.status(500).json({ msg: 'Server error' });
   }

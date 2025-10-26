@@ -169,12 +169,26 @@ const LoginPage = () => {
           </button>
         </form>
 
+        {/* Forgot Password Link */}
+        <div className="mt-4 text-center text-sm text-black dark:text-gray-300">
+          <Link to="/reset-password" className="text-cyan-600 hover:text-cyan-500 font-semibold">
+            Forgot Password?
+          </Link>
+        </div>
+
         {/* Toggle Link */}
-        <div className="mt-6 text-center text-sm text-black dark:text-gray-300">
+        <div className="mt-2 text-center text-sm text-black dark:text-gray-300">
           Don't have an account?{' '}
           <Link to="/register" className="text-cyan-600 hover:text-cyan-500 font-semibold">
             Register
           </Link>
+        </div>
+
+        {/* Spam Folder Notice */}
+        <div className="mt-4 text-center">
+          <p className="text-xs text-gray-500 dark:text-gray-500">
+            If you don't receive the verification email, please check your spam/junk folder.
+          </p>
         </div>
       </div>
     </div>

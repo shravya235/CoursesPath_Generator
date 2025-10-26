@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage';
 import RegisterPage from './pages/auth/RegisterPage';
 import LoginPage from './pages/auth/LoginPage';
 import OtpEntryPage from './pages/auth/OtpEntryPage';
+import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 import Dashboard from './pages/Dashboard';
 import ContactPage from './pages/ContactPage';
 import TermsPage from './pages/TermsPage';
@@ -17,6 +18,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/otp-entry" element={<OtpEntryPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/terms" element={<TermsPage />} />
         {/* 2. Wrap the Dashboard route */}

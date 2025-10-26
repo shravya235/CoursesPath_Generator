@@ -15,6 +15,12 @@ router.post('/send-otp', authController.sendOtp);
 // Verify OTP
 router.post('/verify-otp', authController.verifyOtp);
 
+// Forgot password - send OTP
+router.post('/forgot-password', authController.forgotPassword);
+
+// Reset password with OTP
+router.post('/reset-password', authController.resetPassword);
+
 // Get the logged-in user
 router.get('/user', authMiddleware, authController.getLoggedInUser);
 

@@ -6,9 +6,25 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 // Function to send OTP email
 const sendOtpEmail = async (email, otp) => {
   const mailOptions = {
-    from: `GyanVistara <${process.env.EMAIL_USER}>`,
+    from: {
+      email: process.env.EMAIL_USER,
+      name: 'GyanVistara'
+    },
     to: email,
     subject: 'Your GyanVistara Verification Code',
+    mail_settings: {
+      sandbox_mode: {
+        enable: false
+      }
+    },
+    tracking_settings: {
+      click_tracking: {
+        enable: false
+      },
+      open_tracking: {
+        enable: false
+      }
+    },
     html: `
       <!DOCTYPE html>
       <html lang="en">
@@ -157,10 +173,18 @@ const sendOtpEmail = async (email, otp) => {
 // Function to send contact email (No changes needed for OTP centering/span removal)
 const sendContactEmail = async (name, email, message) => {
   const mailOptions = {
-    from: `GyanVistara Contact Form <${process.env.EMAIL_USER}>`,
+    from: {
+      email: process.env.EMAIL_USER,
+      name: 'GyanVistara Contact Form'
+    },
     to: 'gyanvistara.web@gmail.com',
     replyTo: email,
     subject: `New Contact Message from ${name} via GyanVistara`,
+    mail_settings: {
+      sandbox_mode: {
+        enable: false
+      }
+    },
     html: `
       <!DOCTYPE html>
       <html lang="en">

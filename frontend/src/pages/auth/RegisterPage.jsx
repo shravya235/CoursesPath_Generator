@@ -120,7 +120,7 @@ const RegisterPage = () => {
       }
 
       // If registration is successful (OTP sent), redirect to OTP entry page
-      navigate('/login');
+      navigate('/otp-entry', { state: { email: formData.email } });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -271,6 +271,13 @@ const RegisterPage = () => {
           <Link to="/login" className="text-cyan-600 hover:text-cyan-500 font-semibold">
             Log In
           </Link>
+        </div>
+
+        {/* Spam Folder Notice */}
+        <div className="mt-4 text-center">
+          <p className="text-xs text-gray-500 dark:text-gray-500">
+            If you don't receive the verification email, please check your spam/junk folder.
+          </p>
         </div>
       </div>
     </div>
