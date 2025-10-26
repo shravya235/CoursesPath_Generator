@@ -128,6 +128,11 @@ const RegisterPage = () => {
     }
   };
 
+  const handleOtpVerified = () => {
+    // After OTP verification, redirect directly to dashboard
+    navigate('/dashboard');
+  };
+
   return (
     <div className={`min-h-screen relative overflow-x-hidden font-sans flex items-center justify-center transition-colors duration-500 ${theme === 'light' ? 'bg-[#F9FAFB] text-gray-900' : 'bg-[#0a0f23] text-gray-100'}`}>
       {/* Fixed Theme Toggle at Top */}

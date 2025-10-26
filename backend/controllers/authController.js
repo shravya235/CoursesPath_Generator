@@ -227,6 +227,11 @@ exports.forgotPassword = async (req, res) => {
       return res.status(400).json({ msg: 'User not found' });
     }
 
+    // Check if user is verified
+    if (!user.isVerified) {
+      return res.status(400).json({ msg: 'Please verify your email first before resetting password' });
+    }
+
     // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 

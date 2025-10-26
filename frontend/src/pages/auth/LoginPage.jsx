@@ -85,8 +85,14 @@ const LoginPage = () => {
         throw new Error(data.msg || 'Something went wrong');
       }
 
-      // If login is successful (OTP sent), redirect to OTP entry page
-      navigate('/otp-entry', { state: { email: formData.email } });
+      // If login is successful and user is verified, save token and redirect to dashboard
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        navigate('/dashboard');
+      } else {
+        // If OTP sent, redirect to OTP entry page
+        navigate('/otp-entry', { state: { email: formData.email } });
+      }
     } catch (err) {
       setError(err.message);
     } finally {
