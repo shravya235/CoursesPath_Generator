@@ -137,9 +137,16 @@ const ResetPasswordPage = () => {
         throw new Error(data.msg || 'Something went wrong');
       }
 
-      // Success: redirect to login with success message
-      localStorage.setItem('successMessage', 'Password reset successfully! Please log in with your new password.');
-      navigate('/login');
+      // Success: store token and redirect to dashboard
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('successMessage', 'Password reset successfully! Welcome back.');
+        navigate('/dashboard');
+      } else {
+        // Fallback to login if no token
+        localStorage.setItem('successMessage', 'Password reset successfully! Please log in with your new password.');
+        navigate('/login');
+      }
     } catch (err) {
       setError(err.message);
     } finally {

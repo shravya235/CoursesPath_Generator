@@ -280,12 +280,28 @@ exports.resetPassword = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(newPassword, salt);
 
-    // Clear OTP
+    // Mark user as verified and clear OTP
+    user.isVerified = true;
     user.otp = undefined;
     user.otpExpires = undefined;
     await user.save();
 
-    res.json({ msg: 'Password reset successfully' });
+    // Generate JWT token for automatic login
+    const payload = {
+      user: {
+        id: user.id,
+      },
+    };
+
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: '5 days' },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ msg: 'Password reset successfully', token });
+      }
+    );
   } catch (err) {
     console.error('Reset password error:', err);
     res.status(500).json({ msg: 'Server error' });
