@@ -15,11 +15,13 @@ const HomePage = () => {
       }
     }
   }, [location]);
+  // --- Add IDs matching the routes ---
   const paths = [
-    { title: 'Engineering', tags: ['PCM Required', '4-Year B.Tech', 'Top Colleges'], gradient: 'bg-gradient-magenta-cyan', rotation: 'md:rotate-2' },
-    { title: 'Medical', tags: ['Exam: NEET', '5-Year MBBS', 'High Demand'], gradient: 'bg-gradient-purple-blue', rotation: 'md:-rotate-2' },
-    { title: 'Law', tags: ['CLAT Exam', '5-Year LLB', 'Corporate Law'], gradient: 'bg-gradient-to-r from-yellow-400 to-orange-500', rotation: 'md:rotate-1' },
+    { id: 'engineering', title: 'Engineering', tags: ['PCM Required', '4-Year B.Tech', 'Top Colleges'], gradient: 'bg-gradient-magenta-cyan', rotation: 'md:rotate-2' },
+    { id: 'medical', title: 'Medical', tags: ['Exam: NEET', '5-Year MBBS', 'High Demand'], gradient: 'bg-gradient-purple-blue', rotation: 'md:-rotate-2' },
+    { id: 'law', title: 'Law', tags: ['CLAT Exam', '5-Year LLB', 'Corporate Law'], gradient: 'bg-gradient-to-r from-yellow-400 to-orange-500', rotation: 'md:rotate-1' },
   ];
+  // --- ---
 
   return (
     <div className="bg-light-bg dark:bg-[#0a0f23] min-h-screen text-light-text dark:text-gray-100 relative overflow-x-hidden font-sans pt-20 md:pt-24">
@@ -51,15 +53,18 @@ const HomePage = () => {
       <section className="py-24 -mt-20">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12 lg:gap-16">
+            {/* --- Wrap each card in a Link --- */}
             {paths.map((path, index) => (
-              <PathCard
-                key={index}
-                title={path.title}
-                tags={path.tags}
-                gradient={path.gradient}
-                rotation={path.rotation}
-              />
+              <Link key={index} to={`/path/${path.id}`} className="block"> {/* Add Link here */}
+                <PathCard
+                  title={path.title}
+                  tags={path.tags}
+                  gradient={path.gradient}
+                  rotation={path.rotation}
+                />
+              </Link>
             ))}
+             {/* --- --- */}
           </div>
         </div>
       </section>

@@ -19,7 +19,6 @@ const educationalPaths = [
     { id: 'business', name: 'Business', icon: <FaBusinessTime size={50} />, description: 'Learn the fundamentals of management, finance, marketing, and operations to lead in the corporate world.' },
     { id: 'logistics', name: 'Logistics', icon: <FaTruck size={50} />, description: 'Master the art of supply chain management, from procurement and warehousing to transportation and delivery.' },
     { id: 'medical', name: 'Medical', icon: <FaStethoscope size={50} />, description: 'Embark on a journey to heal and care for others, from general practice to specialized surgery.' },
-    { id: 'doctor', name: 'Doctor', icon: <FaUserMd size={50} />, description: 'Pursue the noble profession of medicine to diagnose, treat, and prevent human diseases and injuries.' },
     { id: 'pharmacy', name: 'Pharmacy', icon: <FaUniversity size={50} />, description: 'Become an expert in medicines and their effects, ensuring safe and effective treatment for patients.' },
     { id: 'engineering', name: 'Engineering', icon: <FaHardHat size={50} />, description: 'Design, build, and maintain engines, machines, structures, and more. A vast field with numerous specializations.' },
     { id: 'law', name: 'Law', icon: <FaGavel size={50} />, description: 'Understand the legal system, advocate for justice, and navigate the complexities of legislation.' },
@@ -31,7 +30,7 @@ const educationalPaths = [
 const PathList = ({ paths, selectedPath, onPathHover, searchTerm }) => {
   // Determine if the full list is showing (no search term) or if it's filtered
   const isFiltered = searchTerm.trim().length > 0;
-  
+
   // Decide which paths to display based on whether filtering is active
   const displayPaths = isFiltered ? paths : educationalPaths; // Show all if not searching
 
@@ -42,7 +41,7 @@ const PathList = ({ paths, selectedPath, onPathHover, searchTerm }) => {
         {displayPaths.map((path) => {
           // Check if the current path matches the search term OR if no search is active
           const isMatching = !isFiltered || path.name.toLowerCase().includes(searchTerm.toLowerCase());
-          
+
           return (
             <button
               key={path.id}
