@@ -25,6 +25,7 @@ const sendOtpEmail = async (email, otp) => {
         enable: false
       }
     },
+    reply_to: process.env.EMAIL_USER, // Add reply-to to prevent issues
     html: `
       <!DOCTYPE html>
       <html lang="en">

@@ -36,7 +36,8 @@ connectDB();
 
 // Initialize Middleware
 // app.use(cors()); // We replaced this with the configuration above
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); // Increase limit for potential large payloads
+app.use(express.urlencoded({ extended: true, limit: '10mb' })); // For form data
 
 // Define Routes
 app.use('/api/auth', require('./routes/auth'));
@@ -48,6 +49,12 @@ app.get('/api/', (req, res) => {
 
 app.get('/', (req, res) => {
   res.send('Backend API for GyanVistara is running!');
+});
+
+// Global error handler to ensure JSON responses
+app.use((err, req, res, next) => {
+  console.error('Global error handler:', err.stack);
+  res.status(500).json({ msg: 'Server error' });
 });
 
 const PORT = process.env.PORT || 5000;

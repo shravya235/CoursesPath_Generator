@@ -291,6 +291,7 @@ exports.resetPassword = async (req, res) => {
 
     res.json({ msg: 'Password reset successfully' });
   } catch (err) {
+    console.error('Reset password error:', err);
     res.status(500).json({ msg: 'Server error' });
   }
 };
