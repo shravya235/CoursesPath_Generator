@@ -182,7 +182,22 @@ exports.verifyOtp = async (req, res) => {
     user.otpExpires = undefined;
     await user.save();
 
-    res.json({ msg: 'OTP verified successfully' });
+    // Generate JWT token
+    const payload = {
+      user: {
+        id: user.id,
+      },
+    };
+
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: '5 days' },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ msg: 'OTP verified successfully', token });
+      }
+    );
   } catch (err) {
     res.status(500).json({ msg: 'Server error' });
   }
