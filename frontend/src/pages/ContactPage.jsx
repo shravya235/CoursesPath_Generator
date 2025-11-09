@@ -25,7 +25,7 @@ const ContactPage = () => {
     setError('');
 
     try {
-      const res = await fetch('/api/auth/contact', {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
