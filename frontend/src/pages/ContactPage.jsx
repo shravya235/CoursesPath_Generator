@@ -99,15 +99,6 @@ const ContactPage = () => {
                 </div>
                 <div className="flex items-center">
                   <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center mr-4">
-                    <span className="text-white font-bold">📞</span>
-                  </div>
-                  <div>
-                    <p className="text-gray-700 dark:text-gray-300 font-semibold">Phone</p>
-                    <p className="text-gray-600 dark:text-gray-400">7892848220<br/>9964996717</p>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center mr-4">
                     <span className="text-white font-bold">📍</span>
                   </div>
                   <div>
