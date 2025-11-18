@@ -18,7 +18,7 @@ const Navbar = () => {
     setIsAuthenticated(!!localStorage.getItem('token'));
   }, []);
 
-  // Handle Home link click to scroll to top
+  // Hancd dle Home link click to scroll to top
   const handleHomeClick = () => {
     if (location.pathname === '/') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -70,7 +70,7 @@ const Navbar = () => {
       <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
         <Link to="/" className="md:text-2xl lg:text-3xl text-3xl font-extrabold uppercase tracking-widest select-none flex items-center space-x-2">
           <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent drop-shadow-lg">
-            Gyan Vistara
+            GYAN VISTARA
           </span>
         </Link>
         <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 z-50">
@@ -85,6 +85,9 @@ const Navbar = () => {
           </Link>
           <Link to="/contact" className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">
             Contact
+          </Link>
+          <Link to="/chatbot" className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">
+            Chatbot
           </Link>
         </div>
 
@@ -118,9 +121,8 @@ const Navbar = () => {
       {/* --- MOBILE MENU --- */}
       {menuOpen && <div className="fixed inset-0 bg-black/70 z-40" onClick={() => setMenuOpen(false)}></div>}
       <div
-        className={`fixed top-0 right-0 w-64 sm:w-72 md:w-80 h-full bg-white dark:bg-[#0a0f23] backdrop-blur-md z-50 transform transition-transform duration-300 ease-in-out filter-none ${
-          menuOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
+        className={`fixed top-0 right-0 w-64 sm:w-72 md:w-80 h-full bg-white dark:bg-[#0a0f23] backdrop-blur-md z-50 transform transition-transform duration-300 ease-in-out filter-none ${menuOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
         role="dialog"
       >
         <div className="flex flex-col h-full">
@@ -133,7 +135,8 @@ const Navbar = () => {
             <Link to="/" onClick={() => { handleHomeClick(); setMenuOpen(false); }} className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">Home</Link>
             <Link to="/#about" onClick={() => setMenuOpen(false)} className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">About</Link>
             <Link to="/contact" onClick={() => setMenuOpen(false)} className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">Contact</Link>
-            
+            <Link to="/chatbot" onClick={() => setMenuOpen(false)} className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">Chatbot</Link>
+
             {/* --- 6. MODIFIED MOBILE AUTH BUTTONS --- */}
             <div className="flex flex-col space-y-4">
               <button

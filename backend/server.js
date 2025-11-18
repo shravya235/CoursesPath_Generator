@@ -41,6 +41,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' })); // For form data
 
 // Define Routes
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/chatbot', require('./routes/chatbot'));
 
 // Health check endpoint
 app.get('/api/', (req, res) => {

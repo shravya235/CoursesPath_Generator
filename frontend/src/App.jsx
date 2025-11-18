@@ -8,6 +8,7 @@ import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 import Dashboard from './pages/Dashboard';
 import ContactPage from './pages/ContactPage';
 import TermsPage from './pages/TermsPage';
+import ChatbotPage from './pages/ChatbotPage';
 import PrivateRoute from './components/PrivateRoute';
 
 // --- Import all the new path pages ---
@@ -33,6 +34,7 @@ function App() {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/terms" element={<TermsPage />} />
+        <Route path="/chatbot" element={<ChatbotPage />} />
         {/* --- Add static routes for each path --- */}
         <Route path="/path/engineering" element={<EngineeringPage />} />
         <Route path="/path/medical" element={<MedicalPage />} />
