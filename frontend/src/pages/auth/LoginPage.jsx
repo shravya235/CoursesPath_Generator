@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false); // State for loading indicator
   const [theme, setTheme] = useState('dark'); // Default to dark for auth pages
   const [successMessage, setSuccessMessage] = useState(''); // State for success message
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate(); // Hook for navigation
 
 
@@ -146,17 +148,24 @@ const LoginPage = () => {
             />
           </div>
 
-          {/* Password Input */}
-          <div>
+          {/* Password Input with eye icon */}
+          <div className="relative">
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               name="password"
               value={formData.password}
               onChange={handleChange}
               placeholder="Password"
-              className={`w-full border-0 rounded-lg px-4 py-3 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all ${theme === 'light' ? 'bg-gray-200 text-gray-900' : 'bg-gray-700/50 text-gray-100'}`}
+              className={`w-full border-0 rounded-lg px-4 py-3 pr-10 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all ${theme === 'light' ? 'bg-gray-200 text-gray-900' : 'bg-gray-700/50 text-gray-100'}`}
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className={`absolute inset-y-0 right-0 px-3 flex items-center ${theme === 'light' ? 'text-gray-500 hover:text-cyan-600' : 'text-gray-400 hover:text-cyan-300'}`}
+            >
+              {showPassword ? <AiOutlineEyeInvisible size={22} /> : <AiOutlineEye size={22} />}
+            </button>
           </div>
 
           {/* Success Message */}

@@ -30,7 +30,7 @@ const CustomSelect = ({ options, value, onChange, placeholder }) => {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-gray-200 border-0 rounded-lg px-4 py-3 text-left text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all flex justify-between items-center"
+        className="w-full bg-gray-200 border-0 rounded-lg px-3 py-2 sm:px-4 sm:py-3 text-left text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all flex justify-between items-center"
       >
         <span className={value ? 'text-gray-900' : 'text-gray-500'}>{selectedLabel}</span>
         <svg

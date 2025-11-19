@@ -7,11 +7,8 @@ require('dotenv').config();
 
 const app = express();
 
-// --- START: NEW CORS CONFIGURATION ---
-// Allow multiple origins for flexibility (e.g., production, previews, localhost)
 const allowedOrigins = [
   'https://gyanvistara.vercel.app',
-  'https://gyanvistara-git-main-shravya.vercel.app', // Example preview URL; replace with actual if different
   'http://localhost:3000', // For local development
   'http://localhost:5173'  // Vite default dev port
 ];

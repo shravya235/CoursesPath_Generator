@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
 const ResetPasswordPage = () => {
   const [step, setStep] = useState(1); // 1: Enter email, 2: Enter OTP and new password
@@ -14,6 +15,8 @@ const ResetPasswordPage = () => {
   const [resendLoading, setResendLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [theme, setTheme] = useState('dark');
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {

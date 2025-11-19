@@ -174,7 +174,12 @@ const OtpEntryPage = () => {
             <input
               type="text"
               value={otp}
-              onChange={handleOtpChange}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, ''); // Only allow digits
+                if (value.length <= 6) {
+                  setOtp(value);
+                }
+              }}
               placeholder="Enter 6-digit OTP"
               className={`w-full border-0 rounded-lg px-4 py-3 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all text-center text-xl tracking-widest ${theme === 'light' ? 'bg-gray-200 text-gray-900' : 'bg-gray-700/50 text-gray-100'}`}
               maxLength="6"

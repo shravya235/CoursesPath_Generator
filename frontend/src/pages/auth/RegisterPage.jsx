@@ -213,12 +213,14 @@ const RegisterPage = () => {
           </div>
 
           {/* Education Dropdown */}
-          <CustomSelect
-            options={educationOptions}
-            value={formData.education}
-            onChange={handleEducationChange}
-            placeholder="Select Education Level"
-          />
+          <div className="relative">
+            <CustomSelect
+              options={educationOptions}
+              value={formData.education}
+              onChange={handleEducationChange}
+              placeholder="Select Education Level"
+            />
+          </div>
 
           {/* Custom Education Input */}
           {formData.education === 'other' && (
@@ -246,9 +248,8 @@ const RegisterPage = () => {
             />
             <label
               htmlFor="agree"
-              className={`w-5 h-5 rounded border-2 border-cyan-500 flex items-center justify-center cursor-pointer transition-all mt-0.5 ${
-                formData.agree ? 'bg-gradient-to-r from-cyan-500 to-blue-500' : 'bg-transparent'
-              }`}
+              className={`w-5 h-5 rounded border-2 border-cyan-500 flex items-center justify-center cursor-pointer transition-all mt-0.5 ${formData.agree ? 'bg-gradient-to-r from-cyan-500 to-blue-500' : 'bg-transparent'
+                }`}
             >
               {formData.agree && <span className="text-white text-xs">✓</span>}
             </label>
