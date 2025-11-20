@@ -16,9 +16,7 @@ router.post('/chat', async (req, res) => {
         }
 
         // Default model is Flash
-        const modelName = modelType === 'pro' 
-            ? 'gemini-3.0-pro'        // <- Gemini Pro 3 model
-            : 'gemini-2.0-flash';     // <- Flash model (default)
+        const modelName = 'gemini-3.0-pro';
 
         const model = genAI.getGenerativeModel({ model: modelName });
 
