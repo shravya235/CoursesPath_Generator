@@ -158,26 +158,6 @@ const RegisterPage = () => {
             </h2>
           </div>
 
-          {/* Google Button */}
-          <div className="mb-4">
-            <GoogleAuthButton 
-              text="Sign up with Google"
-              onSuccess={handleGoogleSuccess}
-              onError={() => setError('Google Signup Failed')}
-            />
-          </div>
-
-          <div className="relative mb-4">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className={`px-2 ${theme === 'light' ? 'bg-white text-gray-500' : 'bg-gray-800 text-gray-400'}`}>
-                Or with email
-              </span>
-            </div>
-          </div>
-
           {/* Form - Compact Spacing */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Name" className={`w-full border-0 rounded-lg px-4 py-2.5 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all ${theme === 'light' ? 'bg-gray-200 text-gray-900' : 'bg-gray-700/50 text-gray-100'}`} required />
@@ -211,6 +191,26 @@ const RegisterPage = () => {
               {loading ? 'Registering...' : 'Register'}
             </button>
           </form>
+
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className={`px-2 ${theme === 'light' ? 'bg-white text-gray-500' : 'bg-gray-800 text-gray-400'}`}>
+                Or
+              </span>
+            </div>
+          </div>
+
+          {/* Google Button - MOVED HERE */}
+          <div className="mb-4">
+            <GoogleAuthButton 
+              text="Sign up with Google"
+              onSuccess={handleGoogleSuccess}
+              onError={() => setError('Google Signup Failed')}
+            />
+          </div>
 
           <div className="mt-4 text-center text-sm text-gray-600 dark:text-gray-300">
             Have an account? <Link to="/login" className="text-cyan-500 hover:text-cyan-400 font-semibold">Log In</Link>
