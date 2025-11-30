@@ -130,7 +130,7 @@ const ContactPage = () => {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Your Name"
-                    className="w-full bg-gray-200 dark:bg-gray-700/50 border-0 rounded-lg px-4 py-3 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
+                    className="w-full bg-gray-200 dark:bg-gray-700/50 border-0 rounded-lg px-4 py-3 sm:py-2.5 text-sm sm:text-base text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
                     required
                   />
                 </div>
@@ -141,7 +141,7 @@ const ContactPage = () => {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="Your Email"
-                    className="w-full bg-gray-200 dark:bg-gray-700/50 border-0 rounded-lg px-4 py-3 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
+                    className="w-full bg-gray-200 dark:bg-gray-700/50 border-0 rounded-lg px-4 py-3 sm:py-2.5 text-sm sm:text-base text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
                     required
                   />
                 </div>
@@ -152,7 +152,7 @@ const ContactPage = () => {
                     onChange={handleChange}
                     placeholder="Your Message"
                     rows="5"
-                    className="w-full bg-gray-200 dark:bg-gray-700/50 border-0 rounded-lg px-4 py-3 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all resize-none"
+                    className="w-full bg-gray-200 dark:bg-gray-700/50 border-0 rounded-lg px-4 py-3 sm:py-2.5 text-sm sm:text-base text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all resize-none"
                     required
                   ></textarea>
                 </div>

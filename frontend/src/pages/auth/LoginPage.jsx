@@ -95,7 +95,7 @@ const LoginPage = () => {
 
   return (
     <div className={`min-h-screen w-full relative font-sans flex flex-col justify-center py-12 sm:px-6 lg:px-8 transition-colors duration-500 overflow-x-hidden ${theme === 'light' ? 'bg-[#F9FAFB] text-gray-900' : 'bg-[#0a0f23] text-gray-100'}`}>
-      
+
       {/* Theme Toggle */}
       <div className="fixed top-0 left-0 w-full z-50 pointer-events-none">
         <div className="container mx-auto px-6 py-4 flex justify-end">
@@ -111,7 +111,7 @@ const LoginPage = () => {
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         <div className={`backdrop-blur-lg border rounded-2xl py-8 px-4 sm:px-10 shadow-2xl ${theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-800/50 border-cyan-700/50'}`}>
-          
+
           {/* Logo Section */}
           <div className="text-center mb-6">
             <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-cyan-500 rounded-full mx-auto mb-3 flex items-center justify-center shadow-lg">
@@ -123,19 +123,19 @@ const LoginPage = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" className={`w-full border-0 rounded-lg px-4 py-2.5 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all ${theme === 'light' ? 'bg-gray-200 text-gray-900' : 'bg-gray-700/50 text-gray-100'}`} required />
-            
+            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" className={`w-full border-0 rounded-lg px-4 py-3 sm:py-2.5 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all text-sm sm:text-base ${theme === 'light' ? 'bg-gray-200 text-gray-900' : 'bg-gray-700/50 text-gray-100'}`} required />
+
             <div className="relative">
-              <input type={showPassword ? 'text' : 'password'} name="password" value={formData.password} onChange={handleChange} placeholder="Password" className={`w-full border-0 rounded-lg px-4 py-2.5 pr-10 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all ${theme === 'light' ? 'bg-gray-200 text-gray-900' : 'bg-gray-700/50 text-gray-100'}`} required />
+              <input type={showPassword ? 'text' : 'password'} name="password" value={formData.password} onChange={handleChange} placeholder="Password" className={`w-full border-0 rounded-lg px-4 py-3 sm:py-2.5 pr-10 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all text-sm sm:text-base ${theme === 'light' ? 'bg-gray-200 text-gray-900' : 'bg-gray-700/50 text-gray-100'}`} required />
               <button type="button" onClick={() => setShowPassword(!showPassword)} className={`absolute inset-y-0 right-0 px-3 flex items-center ${theme === 'light' ? 'text-gray-500 hover:text-cyan-600' : 'text-gray-400 hover:text-cyan-300'}`}>
-                {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+                {showPassword ? <AiOutlineEyeInvisible size={18} className="sm:w-5 sm:h-5" /> : <AiOutlineEye size={18} className="sm:w-5 sm:h-5" />}
               </button>
             </div>
 
             {successMessage && <p className="text-green-400 text-xs text-center">{successMessage}</p>}
             {error && <p className="text-red-400 text-xs text-center">{error}</p>}
 
-            <button type="submit" disabled={loading} className="w-full bg-gradient-electric-orange text-white font-extrabold uppercase text-sm py-3 px-6 rounded-full shadow-lg animate-glow transition-all duration-300 hover:scale-105 hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 disabled:opacity-50">
+            <button type="submit" disabled={loading} className="w-full bg-gradient-electric-orange text-white font-extrabold uppercase text-sm sm:text-sm py-3 px-6 rounded-full shadow-lg animate-glow transition-all duration-300 hover:scale-105 hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 disabled:opacity-50">
               {loading ? 'Logging In...' : 'Log In'}
             </button>
           </form>
@@ -153,7 +153,7 @@ const LoginPage = () => {
 
           {/* Google Button - MOVED HERE */}
           <div className="mb-4">
-            <GoogleAuthButton 
+            <GoogleAuthButton
               text="Log in with Google"
               onSuccess={handleGoogleSuccess}
               onError={() => setError('Google Login Failed')}

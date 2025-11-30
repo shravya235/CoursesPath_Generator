@@ -1,25 +1,23 @@
 // src/components/Navbar.jsx
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom'; // 1. Import useNavigate and useLocation
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { HiMenu, HiX } from 'react-icons/hi';
 import { MdDarkMode, MdLightMode } from 'react-icons/md';
 
 const Navbar = () => {
   const [theme, setTheme] = useState('light');
   const [menuOpen, setMenuOpen] = useState(false);
-  const navigate = useNavigate(); // 2. Initialize navigate
-  const location = useLocation(); // Initialize location
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  // 3. Check for token to see if user is authenticated
-  // We use a state that updates on changes to ensure re-renders
+  // Check for token to see if user is authenticated
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
 
   useEffect(() => {
-
     setIsAuthenticated(!!localStorage.getItem('token'));
   }, []);
 
-  // Hancd dle Home link click to scroll to top
+  // Handle Home link click to scroll to top
   const handleHomeClick = () => {
     if (location.pathname === '/') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -27,7 +25,6 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    // ... (your existing theme logic remains unchanged) ...
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
       setTheme(savedTheme);
@@ -59,7 +56,7 @@ const Navbar = () => {
     }
   };
 
-  // 4. Handle Logout Function
+  // Handle Logout Function
   const handleLogout = () => {
     localStorage.removeItem('token'); // Clear the token
     setIsAuthenticated(false); // Update authentication state
@@ -92,7 +89,7 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* --- 5. MODIFIED DESKTOP AUTH BUTTONS --- */}
+        {/* --- DESKTOP AUTH BUTTONS --- */}
         <div className="hidden md:flex items-center md:space-x-2 lg:space-x-4">
           <button
             onClick={toggleTheme}
@@ -141,27 +138,24 @@ const Navbar = () => {
             <Link to="/contact" onClick={() => setMenuOpen(false)} className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">Contact</Link>
             <Link to="/chatbot" onClick={() => setMenuOpen(false)} className="text-light-text dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-semibold tracking-wide">Chatbot</Link>
 
-            {/* --- 6. MODIFIED MOBILE AUTH BUTTONS --- */}
+            {/* --- MOBILE AUTH BUTTONS --- */}
             <div className="flex flex-col space-y-4">
+              {/* Updated Mobile Toggle Button to match Desktop Size */}
               <button
                 onClick={() => { toggleTheme(); setMenuOpen(false); }}
-                className={`relative overflow-hidden h-8 w-8 font-extrabold py-2 px-4 rounded-full transition-all duration-500 transform hover:scale-110 ${theme === 'light'
+                className={`font-extrabold py-2 px-4 rounded-full transition-all duration-500 transform hover:scale-110 flex items-center justify-center w-fit mx-auto ${theme === 'light'
                     ? 'bg-orange-500 hover:bg-orange-600 shadow-[0_0_15px_rgba(255,165,0,0.8)] hover:shadow-[0_0_30px_rgba(255,165,0,1)]'
                     : 'bg-white hover:bg-gray-200 shadow-[0_0_15px_rgba(255,255,255,0.8)] hover:shadow-[0_0_30px_rgba(255,255,255,1)]'
                   }`}
                 aria-label="Toggle Dark/Light Theme"
               >
-                <MdLightMode
-                  className={`absolute inset-0 transition-all duration-500 ${theme === 'light' ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
-                  size={20}
-                  color="yellow"
-                />
-                <MdDarkMode
-                  className={`absolute inset-0 transition-all duration-500 ${theme === 'dark' ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0'}`}
-                  size={20}
-                  color="black"
-                />
+                {theme === 'light' ? (
+                  <MdLightMode size={20} color="yellow" />
+                ) : (
+                  <MdDarkMode size={20} color="black" />
+                )}
               </button>
+              
               {isAuthenticated ? (
                 <button
                   onClick={() => { handleLogout(); setMenuOpen(false); }}

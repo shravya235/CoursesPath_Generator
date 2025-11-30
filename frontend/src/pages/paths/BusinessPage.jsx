@@ -22,11 +22,11 @@ const BusinessPage = () => {
     <div className="bg-light-bg dark:bg-[#0a0f23] min-h-screen text-light-text dark:text-gray-100 pt-20 md:pt-24">
       <Navbar />
       <main className="container mx-auto px-4 md:px-6 py-12">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold uppercase text-center mb-8 bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold uppercase text-center mb-6 sm:mb-8 bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">
           {pathData.pathName}
         </h1>
 
-        <div className="bg-white dark:bg-gray-800/30 backdrop-blur-lg rounded-2xl p-6 md:p-10 border border-gray-200 dark:border-cyan-700/50 shadow-2xl max-w-4xl mx-auto space-y-8">
+        <div className="bg-white dark:bg-gray-800/30 backdrop-blur-lg rounded-2xl p-4 sm:p-6 md:p-8 lg:p-10 border border-gray-200 dark:border-cyan-700/50 shadow-2xl max-w-4xl mx-auto space-y-6 sm:space-y-8">
           <section>
             <h2 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">Overview</h2>
             <p className="text-gray-700 dark:text-gray-300">{pathData.overview}</p>

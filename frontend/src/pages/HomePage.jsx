@@ -43,7 +43,7 @@ const HomePage = () => {
           <p className="mt-4 sm:mt-6 text-base sm:text-lg md:text-xl lg:text-2xl text-light-text dark:text-gray-300 max-w-3xl mx-auto font-sans">
             Get accurate, actionable educational paths tailored just for you. Your future starts here.
           </p>
-          <Link to="/dashboard" className="mt-12 inline-block bg-gradient-electric-orange text-white font-extrabold uppercase text-xl py-5 px-14 rounded-full shadow-[0_0_20px_#FF5733,0_0_40px_#FF5733] animate-glow transition-all duration-300 hover:scale-110 hover:shadow-[0_0_40px_#FF5733,0_0_80px_#FF5733] hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500">
+          <Link to="/dashboard" className="mt-12 inline-block bg-gradient-electric-orange text-white font-extrabold uppercase text-sm sm:text-lg md:text-xl py-3 px-8 sm:py-4 sm:px-12 md:py-5 md:px-14 rounded-full shadow-[0_0_20px_#FF5733,0_0_40px_#FF5733] animate-glow transition-all duration-300 hover:scale-110 hover:shadow-[0_0_40px_#FF5733,0_0_80px_#FF5733] hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500">
             Find My Path
           </Link>
         </div>
