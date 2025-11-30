@@ -80,12 +80,8 @@ const LoginPage = () => {
       let data;
       try { data = await res.json(); } catch { throw new Error('Server error'); }
       if (!res.ok) throw new Error(data.msg || 'Something went wrong');
-      if (data.token) {
-        localStorage.setItem('token', data.token);
-        navigate('/dashboard');
-      } else {
-        navigate('/otp-entry', { state: { email: formData.email } });
-      }
+      // Always redirect to OTP entry after successful login
+      navigate('/otp-entry', { state: { email: formData.email } });
     } catch (err) {
       setError(err.message);
     } finally {

@@ -86,38 +86,19 @@ exports.login = async (req, res) => {
       return res.status(400).json({ msg: 'Invalid credentials' });
     }
 
-    if (!user.isVerified) {
-      const otp = Math.floor(100000 + Math.random() * 900000).toString();
-      const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+    // Send OTP after successful login
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
-      user.otp = otp;
-      user.otpExpires = otpExpires;
-      await user.save();
-
-      await sendOtpEmail(email, otp);
-
-      return res.status(400).json({ msg: 'Please verify your email first. OTP sent to your email.' });
-    }
-
+    user.otp = otp;
+    user.otpExpires = otpExpires;
     user.loginAttempts = 0;
     user.lockUntil = undefined;
     await user.save();
 
-    const payload = {
-      user: {
-        id: user.id,
-      },
-    };
+    await sendOtpEmail(email, otp);
 
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET,
-      { expiresIn: '24h' },
-      (err, token) => {
-        if (err) throw err;
-        res.json({ token });
-      }
-    );
+    res.json({ msg: 'OTP sent to your email. Please verify to complete login.' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: 'Server error' });
