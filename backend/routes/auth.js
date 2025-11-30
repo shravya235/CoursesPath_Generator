@@ -27,4 +27,6 @@ router.get('/user', authMiddleware, authController.getLoggedInUser);
 // Contact form submission
 router.post('/contact', authController.sendContactMessage);
 
+router.post('/google', authController.googleAuth);
+
 module.exports = router;

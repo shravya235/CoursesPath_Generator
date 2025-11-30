@@ -12,11 +12,17 @@ const UserSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    // Password is only required if the user did NOT sign up with Google
+    required: function() { return !this.googleId; }
+  },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true // Allows multiple users to have null googleId (email users)
   },
   education: {
     type: String,
-    required: true,
+    default: 'Not Specified', // Default for Google users
   },
   otp: {
     type: String,

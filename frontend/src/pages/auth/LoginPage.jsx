@@ -1,42 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import GoogleAuthButton from '../../components/GoogleAuthButton';
 
 const LoginPage = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-  const [error, setError] = useState(''); // State for handling errors
-  const [loading, setLoading] = useState(false); // State for loading indicator
-  const [theme, setTheme] = useState('dark'); // Default to dark for auth pages
-  const [successMessage, setSuccessMessage] = useState(''); // State for success message
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [theme, setTheme] = useState('dark');
+  const [successMessage, setSuccessMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate(); // Hook for navigation
-
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Check for saved theme or default to dark
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
       setTheme(savedTheme);
-      if (savedTheme === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
+      if (savedTheme === 'dark') document.documentElement.classList.add('dark');
+      else document.documentElement.classList.remove('dark');
     } else {
-      // Default to dark for auth pages
       setTheme('dark');
       document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');
     }
-
-    // Check for success message from localStorage
     const storedMessage = localStorage.getItem('successMessage');
     if (storedMessage) {
       setSuccessMessage(storedMessage);
-      localStorage.removeItem('successMessage'); // Clear it after displaying
+      localStorage.removeItem('successMessage');
     }
   }, []);
 
@@ -54,45 +44,46 @@ const LoginPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormData({ ...formData, [name]: value });
   };
 
-  // --- MODIFIED HANDLE SUBMIT ---
+  const handleGoogleSuccess = async (tokenResponse) => {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: tokenResponse.access_token }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.msg || 'Google login failed');
+      localStorage.setItem('token', data.token);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Clear previous errors
+    setError('');
     setLoading(true);
-
     try {
       const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
       let data;
-      try {
-        data = await res.json();
-      } catch (jsonErr) {
-        // If response is not JSON (e.g., HTML error page), show generic error
-        throw new Error('Server error: Unable to process response. Please try again.');
-      }
-
-      if (!res.ok) {
-        throw new Error(data.msg || 'Something went wrong');
-      }
-
-      // If login is successful and user is verified, save token and redirect to dashboard
+      try { data = await res.json(); } catch { throw new Error('Server error'); }
+      if (!res.ok) throw new Error(data.msg || 'Something went wrong');
       if (data.token) {
         localStorage.setItem('token', data.token);
         navigate('/dashboard');
       } else {
-        // If OTP sent, redirect to OTP entry page
         navigate('/otp-entry', { state: { email: formData.email } });
       }
     } catch (err) {
@@ -103,107 +94,78 @@ const LoginPage = () => {
   };
 
   return (
-    <div className={`min-h-screen relative overflow-x-hidden font-sans flex items-center justify-center transition-colors duration-500 ${theme === 'light' ? 'bg-[#F9FAFB] text-gray-900' : 'bg-[#0a0f23] text-gray-100'}`}>
-      {/* Fixed Theme Toggle at Top */}
-      <div className="fixed top-0 left-0 w-full bg-gray-800/80 backdrop-blur-md border-b border-cyan-700/50 z-50">
+    <div className={`min-h-screen w-full relative font-sans flex flex-col justify-center py-12 sm:px-6 lg:px-8 transition-colors duration-500 overflow-x-hidden ${theme === 'light' ? 'bg-[#F9FAFB] text-gray-900' : 'bg-[#0a0f23] text-gray-100'}`}>
+      
+      {/* Theme Toggle */}
+      <div className="fixed top-0 left-0 w-full z-50 pointer-events-none">
         <div className="container mx-auto px-6 py-4 flex justify-end">
-          <button
-            onClick={toggleTheme}
-            className="bg-gradient-electric-orange hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 text-white font-extrabold py-2 px-4 rounded-full shadow-[0_0_15px_rgba(255,69,0,0.8)] hover:shadow-[0_0_30px_rgba(255,69,0,1)] transition-colors duration-300"
-            aria-label="Toggle Dark/Light Theme"
-          >
+          <button onClick={toggleTheme} className="pointer-events-auto bg-gradient-electric-orange hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 text-white font-bold py-2 px-4 rounded-full shadow-lg transition-colors duration-300 text-sm">
             {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
           </button>
         </div>
       </div>
 
-      {/* Animated gradient blobs */}
-      <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[28rem] ${theme === 'light' ? 'bg-gradient-magenta-cyan opacity-5' : 'bg-gradient-magenta-cyan opacity-20'} blur-[80px] rounded-full animate-blob pointer-events-none select-none`}></div>
-      <div className={`absolute top-20 right-10 w-72 h-72 ${theme === 'light' ? 'bg-gradient-purple-blue opacity-5' : 'bg-gradient-purple-blue opacity-15'} blur-[60px] rounded-full animate-blob-delayed pointer-events-none select-none`}></div>
+      {/* Background Effects */}
+      <div className={`fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[28rem] ${theme === 'light' ? 'bg-gradient-magenta-cyan opacity-5' : 'bg-gradient-magenta-cyan opacity-20'} blur-[80px] rounded-full animate-blob pointer-events-none select-none`}></div>
+      <div className={`fixed top-20 right-10 w-72 h-72 ${theme === 'light' ? 'bg-gradient-purple-blue opacity-5' : 'bg-gradient-purple-blue opacity-15'} blur-[60px] rounded-full animate-blob-delayed pointer-events-none select-none`}></div>
 
-      {/* Glassmorphism Login Card */}
-      <div className={`relative z-10 backdrop-blur-lg border rounded-2xl p-4 md:p-8 w-full max-w-sm md:max-w-md lg:max-w-lg shadow-2xl ${theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-800/50 border-cyan-700/50'}`}>
-        {/* Logo and Title */}
-        <div className="text-center mb-6 md:mb-8">
-          <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-r from-purple-400 to-cyan-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-            <span className="text-white text-xl md:text-2xl font-bold">GV</span>
+      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
+        <div className={`backdrop-blur-lg border rounded-2xl py-8 px-4 sm:px-10 shadow-2xl ${theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-800/50 border-cyan-700/50'}`}>
+          
+          {/* Logo Section */}
+          <div className="text-center mb-6">
+            <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-cyan-500 rounded-full mx-auto mb-3 flex items-center justify-center shadow-lg">
+              <span className="text-white text-xl font-bold">GV</span>
+            </div>
+            <h2 className="text-2xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">
+              GyanVistara
+            </h2>
           </div>
-          <h2 className="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">
-            GyanVistara
-          </h2>
-        </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Email Input */}
-          <div>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Email"
-              className={`w-full border-0 rounded-lg px-4 py-3 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all ${theme === 'light' ? 'bg-gray-200 text-gray-900' : 'bg-gray-700/50 text-gray-100'}`}
-              required
+          <div className="mb-4">
+            <GoogleAuthButton 
+              text="Log in with Google"
+              onSuccess={handleGoogleSuccess}
+              onError={() => setError('Google Login Failed')}
             />
           </div>
 
-          {/* Password Input with eye icon */}
-          <div className="relative">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Password"
-              className={`w-full border-0 rounded-lg px-4 py-3 pr-10 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all ${theme === 'light' ? 'bg-gray-200 text-gray-900' : 'bg-gray-700/50 text-gray-100'}`}
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className={`absolute inset-y-0 right-0 px-3 flex items-center ${theme === 'light' ? 'text-gray-500 hover:text-cyan-600' : 'text-gray-400 hover:text-cyan-300'}`}
-            >
-              {showPassword ? <AiOutlineEyeInvisible size={22} /> : <AiOutlineEye size={22} />}
+          <div className="relative mb-4">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className={`px-2 ${theme === 'light' ? 'bg-white text-gray-500' : 'bg-gray-800 text-gray-400'}`}>
+                Or with email
+              </span>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" className={`w-full border-0 rounded-lg px-4 py-2.5 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all ${theme === 'light' ? 'bg-gray-200 text-gray-900' : 'bg-gray-700/50 text-gray-100'}`} required />
+            
+            <div className="relative">
+              <input type={showPassword ? 'text' : 'password'} name="password" value={formData.password} onChange={handleChange} placeholder="Password" className={`w-full border-0 rounded-lg px-4 py-2.5 pr-10 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all ${theme === 'light' ? 'bg-gray-200 text-gray-900' : 'bg-gray-700/50 text-gray-100'}`} required />
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className={`absolute inset-y-0 right-0 px-3 flex items-center ${theme === 'light' ? 'text-gray-500 hover:text-cyan-600' : 'text-gray-400 hover:text-cyan-300'}`}>
+                {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+              </button>
+            </div>
+
+            {successMessage && <p className="text-green-400 text-xs text-center">{successMessage}</p>}
+            {error && <p className="text-red-400 text-xs text-center">{error}</p>}
+
+            <button type="submit" disabled={loading} className="w-full bg-gradient-electric-orange text-white font-extrabold uppercase text-sm py-3 px-6 rounded-full shadow-lg animate-glow transition-all duration-300 hover:scale-105 hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 disabled:opacity-50">
+              {loading ? 'Logging In...' : 'Log In'}
             </button>
+          </form>
+
+          <div className="mt-4 text-center text-sm text-gray-600 dark:text-gray-300">
+            <Link to="/reset-password" className="text-cyan-500 hover:text-cyan-400 font-semibold">Forgot Password?</Link>
           </div>
-
-          {/* Success Message */}
-          {successMessage && <p className="text-green-400 text-sm text-center">{successMessage}</p>}
-
-          {/* --- ERROR MESSAGE DISPLAY --- */}
-          {error && <p className="text-red-400 text-sm text-center">{error}</p>}
-
-          {/* Login Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-gradient-electric-orange text-white font-extrabold uppercase text-lg py-3 px-6 rounded-full shadow-[0_0_20px_#FF5733,0_0_40px_#FF5733] animate-glow transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_#FF5733,0_0_80px_#FF5733] hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? 'Logging In...' : 'Log In'}
-          </button>
-        </form>
-
-        {/* Forgot Password Link */}
-        <div className="mt-4 text-center text-sm text-black dark:text-gray-300">
-          <Link to="/reset-password" className="text-cyan-600 hover:text-cyan-500 font-semibold">
-            Forgot Password?
-          </Link>
-        </div>
-
-        {/* Toggle Link */}
-        <div className="mt-2 text-center text-sm text-black dark:text-gray-300">
-          Don't have an account?{' '}
-          <Link to="/register" className="text-cyan-600 hover:text-cyan-500 font-semibold">
-            Register
-          </Link>
-        </div>
-
-        {/* Spam Folder Notice */}
-        <div className="mt-4 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-500">
-            If you don't receive the verification email, please check your spam/junk folder.
-          </p>
+          <div className="mt-2 text-center text-sm text-gray-600 dark:text-gray-300">
+            Don't have an account? <Link to="/register" className="text-cyan-500 hover:text-cyan-400 font-semibold">Register</Link>
+          </div>
+          <div className="mt-4 text-center"><p className="text-xs text-gray-500">If you don't receive the verification email, check spam.</p></div>
         </div>
       </div>
     </div>

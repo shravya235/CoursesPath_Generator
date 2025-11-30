@@ -10,26 +10,21 @@ require('dotenv').config();
 exports.register = async (req, res) => {
   const { name, email, password, education } = req.body;
 
-  // Validate name
   if (!name || name.trim().length === 0) {
     return res.status(400).json({ msg: 'Name is required' });
   }
 
-  // Validate email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return res.status(400).json({ msg: 'Please provide a valid email address' });
   }
 
-  // --- ADDED: PASSWORD VALIDATION ---
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
   if (!passwordRegex.test(password)) {
     return res.status(400).json({
       msg: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
     });
   }
-  // --- END OF VALIDATION ---
 
   try {
     let user = await User.findOne({ email });
@@ -49,22 +44,18 @@ exports.register = async (req, res) => {
 
     await user.save();
 
-    // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // Set OTP expiration to 10 minutes from now
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
-    // Save OTP to user
     user.otp = otp;
     user.otpExpires = otpExpires;
     await user.save();
 
-    // Send OTP email
     await sendOtpEmail(email, otp);
 
     res.json({ msg: 'Registration successful. Please verify your email.' });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ msg: 'Server error' });
   }
 };
@@ -81,24 +72,24 @@ exports.login = async (req, res) => {
       return res.status(400).json({ msg: 'Invalid credentials' });
     }
 
+    // Check if user is a Google user (no password)
+    if (!user.password && user.googleId) {
+        return res.status(400).json({ msg: 'Please log in with Google' });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ msg: 'Invalid credentials' });
     }
 
     if (!user.isVerified) {
-      // Generate 6-digit OTP
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-      // Set OTP expiration to 10 minutes from now
       const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
-      // Save OTP to user
       user.otp = otp;
       user.otpExpires = otpExpires;
       await user.save();
 
-      // Send OTP email
       await sendOtpEmail(email, otp);
 
       return res.status(400).json({ msg: 'Please verify your email first. OTP sent to your email.' });
@@ -120,7 +111,74 @@ exports.login = async (req, res) => {
       }
     );
   } catch (err) {
+    console.error(err);
     res.status(500).json({ msg: 'Server error' });
+  }
+};
+
+// @route   POST api/auth/google
+// @desc    Login/Register with Google
+// @access  Public
+exports.googleAuth = async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(400).json({ msg: 'No access token provided' });
+    }
+
+    // Using Node 22 global fetch
+    const response = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${token}`);
+    
+    if (!response.ok) {
+      return res.status(400).json({ msg: 'Failed to verify Google token' });
+    }
+
+    const googleUser = await response.json();
+    const { email, name, sub: googleId } = googleUser;
+
+    let user = await User.findOne({ email });
+
+    if (user) {
+      if (!user.googleId) {
+        user.googleId = googleId;
+        user.isVerified = true;
+        await user.save();
+      }
+    } else {
+      user = new User({
+        name,
+        email,
+        googleId,
+        education: 'Not Specified',
+        isVerified: true,
+      });
+      await user.save();
+    }
+
+    const payload = {
+      user: {
+        id: user.id,
+      },
+    };
+
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' },
+      (err, jwtToken) => {
+        if (err) throw err;
+        res.json({ 
+          token: jwtToken, 
+          msg: 'Google Login Successful', 
+          user: { id: user.id, name: user.name, email: user.email } 
+        });
+      }
+    );
+
+  } catch (err) {
+    console.error('Google Auth Error:', err);
+    res.status(500).json({ msg: 'Server error during Google Auth' });
   }
 };
 
@@ -136,22 +194,18 @@ exports.sendOtp = async (req, res) => {
       return res.status(400).json({ msg: 'User not found' });
     }
 
-    // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // Set OTP expiration to 10 minutes from now
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
-    // Save OTP to user
     user.otp = otp;
     user.otpExpires = otpExpires;
     await user.save();
 
-    // Send OTP email
     await sendOtpEmail(email, otp);
 
     res.json({ msg: 'OTP sent to your email' });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ msg: 'Server error' });
   }
 };
@@ -176,13 +230,11 @@ exports.verifyOtp = async (req, res) => {
       return res.status(400).json({ msg: 'OTP expired' });
     }
 
-    // Mark user as verified
     user.isVerified = true;
     user.otp = undefined;
     user.otpExpires = undefined;
     await user.save();
 
-    // Generate JWT token
     const payload = {
       user: {
         id: user.id,
@@ -199,6 +251,7 @@ exports.verifyOtp = async (req, res) => {
       }
     );
   } catch (err) {
+    console.error(err);
     res.status(500).json({ msg: 'Server error' });
   }
 };
@@ -211,6 +264,7 @@ exports.getLoggedInUser = async (req, res) => {
     const user = await User.findById(req.user.id).select('-password');
     res.json(user);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ msg: 'Server error' });
   }
 };
@@ -227,18 +281,13 @@ exports.forgotPassword = async (req, res) => {
       return res.status(400).json({ msg: 'User not found' });
     }
 
-    // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // Set OTP expiration to 10 minutes from now
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
-    // Save OTP to user (reuse otp fields)
     user.otp = otp;
     user.otpExpires = otpExpires;
     await user.save();
 
-    // Send OTP email
     await sendOtpEmail(email, otp);
 
     res.json({ msg: 'Password reset OTP sent to your email' });
@@ -254,7 +303,6 @@ exports.forgotPassword = async (req, res) => {
 exports.resetPassword = async (req, res) => {
   const { email, otp, newPassword } = req.body;
 
-  // Password validation
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   if (!passwordRegex.test(newPassword)) {
     return res.status(400).json({
@@ -276,17 +324,14 @@ exports.resetPassword = async (req, res) => {
       return res.status(400).json({ msg: 'OTP expired' });
     }
 
-    // Hash new password
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(newPassword, salt);
 
-    // Mark user as verified and clear OTP
     user.isVerified = true;
     user.otp = undefined;
     user.otpExpires = undefined;
     await user.save();
 
-    // Generate JWT token for automatic login
     const payload = {
       user: {
         id: user.id,
@@ -314,19 +359,16 @@ exports.resetPassword = async (req, res) => {
 exports.sendContactMessage = async (req, res) => {
   const { name, email, message } = req.body;
 
-  // Validate required fields
   if (!name || !email || !message) {
     return res.status(400).json({ msg: 'All fields are required' });
   }
 
-  // Validate email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return res.status(400).json({ msg: 'Please provide a valid email address' });
   }
 
   try {
-    // Send contact email
     const { sendContactEmail } = require('../services/emailService');
     await sendContactEmail(name, email, message);
 
