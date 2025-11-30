@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom'; // 1. Import useNavigate and useLocation
 import { HiMenu, HiX } from 'react-icons/hi';
+import { MdDarkMode, MdLightMode } from 'react-icons/md';
 
 const Navbar = () => {
   const [theme, setTheme] = useState('light');
@@ -95,10 +96,13 @@ const Navbar = () => {
         <div className="hidden md:flex items-center md:space-x-2 lg:space-x-4">
           <button
             onClick={toggleTheme}
-            className="bg-gradient-electric-orange hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 text-white font-extrabold py-2 px-4 rounded-full shadow-[0_0_15px_rgba(255,69,0,0.8)] hover:shadow-[0_0_30px_rgba(255,69,0,1)] transition-colors duration-300"
+            className={`font-extrabold py-2 px-4 rounded-full transition-all duration-500 transform hover:scale-110 ${theme === 'light'
+              ? 'bg-orange-500 hover:bg-orange-600 shadow-[0_0_15px_rgba(255,165,0,0.8)] hover:shadow-[0_0_30px_rgba(255,165,0,1)]'
+              : 'bg-white hover:bg-gray-200 shadow-[0_0_15px_rgba(255,255,255,0.8)] hover:shadow-[0_0_30px_rgba(255,255,255,1)]'
+              }`}
             aria-label="Toggle Dark/Light Theme"
           >
-            {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+            {theme === 'light' ? <MdLightMode size={20} color="yellow" /> : <MdDarkMode size={20} color="black" />}
           </button>
           {isAuthenticated ? (
             <button
@@ -141,10 +145,22 @@ const Navbar = () => {
             <div className="flex flex-col space-y-4">
               <button
                 onClick={() => { toggleTheme(); setMenuOpen(false); }}
-                className="bg-gradient-electric-orange hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 text-white font-extrabold py-2 px-4 rounded-full shadow-[0_0_15px_rgba(255,69,0,0.8)] hover:shadow-[0_0_30px_rgba(255,69,0,1)] transition-colors duration-300"
+                className={`relative overflow-hidden h-8 w-8 font-extrabold py-2 px-4 rounded-full transition-all duration-500 transform hover:scale-110 ${theme === 'light'
+                    ? 'bg-orange-500 hover:bg-orange-600 shadow-[0_0_15px_rgba(255,165,0,0.8)] hover:shadow-[0_0_30px_rgba(255,165,0,1)]'
+                    : 'bg-white hover:bg-gray-200 shadow-[0_0_15px_rgba(255,255,255,0.8)] hover:shadow-[0_0_30px_rgba(255,255,255,1)]'
+                  }`}
                 aria-label="Toggle Dark/Light Theme"
               >
-                {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+                <MdLightMode
+                  className={`absolute inset-0 transition-all duration-500 ${theme === 'light' ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
+                  size={20}
+                  color="yellow"
+                />
+                <MdDarkMode
+                  className={`absolute inset-0 transition-all duration-500 ${theme === 'dark' ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0'}`}
+                  size={20}
+                  color="black"
+                />
               </button>
               {isAuthenticated ? (
                 <button
