@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     // Password is only required if the user did NOT sign up with Google
-    required: function() { return !this.googleId; }
+    required: function () { return !this.googleId; }
   },
   googleId: {
     type: String,
@@ -33,6 +33,22 @@ const UserSchema = new mongoose.Schema({
   isVerified: {
     type: Boolean,
     default: false,
+  },
+  loginAttempts: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  lockUntil: {
+    type: Number
+  },
+  chatbotRequestsToday: {
+    type: Number,
+    default: 0,
+  },
+  lastRequestDate: {
+    type: Date,
+    default: Date.now,
   },
   date: {
     type: Date,

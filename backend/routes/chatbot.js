@@ -1,5 +1,7 @@
 const express = require('express');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const authMiddleware = require('../middleware/authMiddleware');
+const User = require('../models/User');
 require('dotenv').config();
 
 const router = express.Router();
@@ -44,15 +46,42 @@ You are GyanVistara's dedicated AI Educational Assistant. Your purpose is to emp
 `;
 
 // Chat endpoint
-router.post('/chat', async (req, res) => {
+router.post('/chat', authMiddleware, async (req, res) => {
     const modelName = 'gemini-2.5-pro';
 
     try {
         const { message } = req.body;
+        const userId = req.user.id;
 
         if (!message) {
             return res.status(400).json({ error: 'Message is required' });
         }
+
+        // Find the user
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Check if it's a new day and reset count if necessary
+        const today = new Date();
+        const lastRequestDate = new Date(user.lastRequestDate);
+        if (today.toDateString() !== lastRequestDate.toDateString()) {
+            user.chatbotRequestsToday = 0;
+            user.lastRequestDate = today;
+        }
+
+        // Check daily limit
+        if (user.chatbotRequestsToday >= 5) {
+            return res.status(429).json({
+                error: 'Daily limit exceeded',
+                message: 'You have reached the maximum of 5 chatbot requests per day. Please try again tomorrow.'
+            });
+        }
+
+        // Increment request count
+        user.chatbotRequestsToday += 1;
+        await user.save();
 
         const model = genAI.getGenerativeModel({
             model: modelName,
@@ -80,6 +109,21 @@ router.post('/chat', async (req, res) => {
             details: error.message || 'Failed to generate response'
         });
     }
+});
+
+// Unauthenticated chat endpoint for login/register prompt
+router.post('/chat/guest', async (req, res) => {
+    const { message } = req.body;
+
+    if (!message) {
+        return res.status(400).json({ error: 'Message is required' });
+    }
+
+    // Respond with login/register prompt
+    res.json({
+        model: 'guest',
+        response: 'To use the chatbot, please log in or register an account. This helps us provide personalized educational assistance and manage usage limits.'
+    });
 });
 
 module.exports = router;

@@ -72,9 +72,13 @@ exports.login = async (req, res) => {
       return res.status(400).json({ msg: 'Invalid credentials' });
     }
 
+    if (user.lockUntil && user.lockUntil > Date.now()) {
+      return res.status(403).json({ msg: 'Account is temporarily locked. Please try again later.' });
+    }
+
     // Check if user is a Google user (no password)
     if (!user.password && user.googleId) {
-        return res.status(400).json({ msg: 'Please log in with Google' });
+      return res.status(400).json({ msg: 'Please log in with Google' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -94,6 +98,10 @@ exports.login = async (req, res) => {
 
       return res.status(400).json({ msg: 'Please verify your email first. OTP sent to your email.' });
     }
+
+    user.loginAttempts = 0;
+    user.lockUntil = undefined;
+    await user.save();
 
     const payload = {
       user: {
@@ -129,7 +137,7 @@ exports.googleAuth = async (req, res) => {
 
     // Using Node 22 global fetch
     const response = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${token}`);
-    
+
     if (!response.ok) {
       return res.status(400).json({ msg: 'Failed to verify Google token' });
     }
@@ -168,10 +176,10 @@ exports.googleAuth = async (req, res) => {
       { expiresIn: '24h' },
       (err, jwtToken) => {
         if (err) throw err;
-        res.json({ 
-          token: jwtToken, 
-          msg: 'Google Login Successful', 
-          user: { id: user.id, name: user.name, email: user.email } 
+        res.json({
+          token: jwtToken,
+          msg: 'Google Login Successful',
+          user: { id: user.id, name: user.name, email: user.email }
         });
       }
     );

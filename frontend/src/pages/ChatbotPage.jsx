@@ -28,11 +28,19 @@ const ChatbotPage = () => {
         setIsLoading(true);
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/chatbot/chat`, {
+            const token = localStorage.getItem('token');
+            const endpoint = token ? '/api/chatbot/chat' : '/api/chatbot/chat/guest';
+            const headers = {
+                'Content-Type': 'application/json',
+            };
+
+            if (token) {
+                headers['x-auth-token'] = token;
+            }
+
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}${endpoint}`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers,
                 body: JSON.stringify({ message: input }),
             });
 
@@ -41,6 +49,9 @@ const ChatbotPage = () => {
             if (response.ok) {
                 const botMessage = { text: data.response, sender: 'bot', timestamp: new Date() };
                 setMessages(prev => [...prev, botMessage]);
+            } else if (response.status === 429) {
+                const limitMessage = { text: data.message || 'You have reached the daily limit of 5 requests. Please try again tomorrow.', sender: 'bot', timestamp: new Date() };
+                setMessages(prev => [...prev, limitMessage]);
             } else {
                 const errorMessage = { text: 'Sorry, I encountered an error. Please try again.', sender: 'bot', timestamp: new Date() };
                 setMessages(prev => [...prev, errorMessage]);
